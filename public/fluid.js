@@ -71,12 +71,12 @@ let config = {
     SIM_RESOLUTION: 128,
     DYE_RESOLUTION: 1024,
     CAPTURE_RESOLUTION: 512,
-    DENSITY_DISSIPATION: 1,
-    VELOCITY_DISSIPATION: 0.2,
-    PRESSURE: 0.8,
+    DENSITY_DISSIPATION: 1.5,
+    VELOCITY_DISSIPATION: 1.45,
+    PRESSURE: 0.5,
     PRESSURE_ITERATIONS: 20,
-    CURL: 30,
-    SPLAT_RADIUS: 0.25,
+    CURL: 5,
+    SPLAT_RADIUS: 0.15,
     SPLAT_FORCE: 6000,
     SHADING: true,
     COLORFUL: true,
@@ -84,7 +84,7 @@ let config = {
     PAUSED: false,
     BACK_COLOR: { r: 0, g: 0, b: 0 },
     TRANSPARENT: false,
-    BLOOM: true,
+    BLOOM: false,
     BLOOM_ITERATIONS: 8,
     BLOOM_RESOLUTION: 256,
     BLOOM_INTENSITY: 0.8,
@@ -115,18 +115,16 @@ pointers.push(new pointerPrototype());
 const { gl, ext } = getWebGLContext(canvas);
 
 if (isMobile()) {
-    config.DYE_RESOLUTION = 512;
+    config.DYE_RESOLUTION = 1024;
 }
 if (!ext.supportLinearFiltering) {
-    config.DYE_RESOLUTION = 512;
+    config.DYE_RESOLUTION = 1024;
     config.SHADING = false;
     config.BLOOM = false;
     config.SUNRAYS = false;
 }
 
-if (typeof window !== 'undefined' && typeof window.dat !== 'undefined' && window.dat && window.dat.GUI) {
-    startGUI();
-}
+// GUI removida - configurações fixas aplicadas
 
 function getWebGLContext (canvas) {
     const params = { alpha: true, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false };
@@ -1474,25 +1472,56 @@ function correctRadius (radius) {
     return radius;
 }
 
-canvas.addEventListener('mousedown', e => {
-    let posX = scaleByPixelRatio(e.offsetX);
-    let posY = scaleByPixelRatio(e.offsetY);
-    let pointer = pointers.find(p => p.id == -1);
-    if (pointer == null)
-        pointer = new pointerPrototype();
-    updatePointerDownData(pointer, -1, posX, posY);
-});
+// Variável para rastrear posição anterior do mouse
+let lastMouseX = 0;
+let lastMouseY = 0;
+let isMouseMoving = false;
 
 canvas.addEventListener('mousemove', e => {
-    let pointer = pointers[0];
-    if (!pointer.down) return;
     let posX = scaleByPixelRatio(e.offsetX);
     let posY = scaleByPixelRatio(e.offsetY);
-    updatePointerMoveData(pointer, posX, posY);
+    
+    // Calcular movimento do mouse
+    let deltaX = posX - lastMouseX;
+    let deltaY = posY - lastMouseY;
+    
+    // Se o mouse se moveu significativamente
+    if (Math.abs(deltaX) > 1 || Math.abs(deltaY) > 1) {
+        let pointer = pointers[0];
+        
+        // Simular mousedown se não estiver ativo
+        if (!pointer.down) {
+            updatePointerDownData(pointer, -1, posX, posY);
+        }
+        
+        // Atualizar movimento
+        updatePointerMoveData(pointer, posX, posY);
+        
+        isMouseMoving = true;
+        
+        // Limpar timeout anterior se existir
+        if (pointer.moveTimeout) {
+            clearTimeout(pointer.moveTimeout);
+        }
+        
+        // Definir timeout para "soltar" o pointer após parar de mover
+        pointer.moveTimeout = setTimeout(() => {
+            updatePointerUpData(pointer);
+            isMouseMoving = false;
+        }, 100);
+    }
+    
+    lastMouseX = posX;
+    lastMouseY = posY;
 });
 
-window.addEventListener('mouseup', () => {
-    updatePointerUpData(pointers[0]);
+// Limpar quando o mouse sair do canvas
+canvas.addEventListener('mouseleave', () => {
+    let pointer = pointers[0];
+    if (pointer.down) {
+        updatePointerUpData(pointer);
+    }
+    isMouseMoving = false;
 });
 
 canvas.addEventListener('touchstart', e => {
