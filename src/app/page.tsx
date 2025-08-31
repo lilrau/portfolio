@@ -51,7 +51,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
           >
-            I make people's live easier with software they love
+            I make people&apos;s live easier with software they love
           </motion.p>
           
           {/* Portfolio Sections */}

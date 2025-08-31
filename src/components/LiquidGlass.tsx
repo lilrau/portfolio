@@ -81,7 +81,6 @@ const LiquidGlass: React.FC<LiquidGlassProps> = ({
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     const button = e.currentTarget;
     const overlay = button.querySelector('.glass-overlay') as HTMLElement;
-    const ripple = button.querySelector('.ripple') as HTMLElement;
     
     if (overlay) {
       overlay.style.opacity = '1';
