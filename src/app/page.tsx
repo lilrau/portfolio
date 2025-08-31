@@ -4,16 +4,51 @@ import FluidBackground from "../components/fluid";
 import LiquidGlass from "../components/LiquidGlass";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { User, FolderOpen, FileText, Mail, Code2 } from 'lucide-react';
+import { User, FolderOpen, FileText, Mail, Code2, Server, Monitor, Package, Database, Workflow, Cog, Globe, Type, Atom, FileCode, Palette, GitBranch, Bug, Ship, Cloud, Brain } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
+  const [showHeader, setShowHeader] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Mostra o header quando rolar mais que 100vh (altura da hero)
+      setShowHeader(window.scrollY > window.innerHeight * 0.9);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <main className="relative">
+      <motion.div 
+        className="fixed top-0 left-0 w-full flex justify-center gap-4 p-4 z-50"
+        initial={{ opacity: 0, y: -100 }}
+        animate={{ opacity: showHeader ? 1 : 0, y: showHeader ? 0 : -100 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
+        {[
+          { label: 'About Me', target: 'about-me' },
+          { label: 'Stack', target: 'stack' },
+          { label: 'Projects', target: 'projects' },
+          { label: 'Resume', target: 'resume' },
+          { label: 'Contact', target: 'contact' }
+        ].map((item) => (
+          <button
+            key={item.label}
+            onClick={() => document.getElementById(item.target)?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-black transition-colors bg-white/10 backdrop-blur-sm rounded-lg"
+          >
+            {item.label}
+          </button>
+        ))}
+      </motion.div>
       <FluidBackground />
 
       {/* Hero Section */}
       <section className="relative z-10 w-full min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-12 max-w-4xl mx-auto px-6 py-20 md:py-28">
+        <div className="text-center space-y-6 max-w-4xl mx-auto px-6 py-5 md:py-5">
           {/* Nome e cargo com animação */}
           <motion.div 
             className="space-y-6"
@@ -77,6 +112,13 @@ export default function Home() {
                       block: 'start'
                     });
                   }, 200);
+                } if (item.label === 'Stack') {
+                  setTimeout(() => {
+                    document.getElementById('stack')?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                  }, 200);
                 }
               };
 
@@ -130,7 +172,7 @@ export default function Home() {
               <div className="relative">
                 <Image
                   src="/dev_pic_blur_bg.png"
-                  alt="Raul Santos - Full Stack Developer"
+                  alt="Raul Souza Silva - Full Stack Developer"
                   width={400}
                   height={500}
                   className="rounded-2xl shadow-2xl"
@@ -187,6 +229,169 @@ export default function Home() {
                 </div>
               </div>
             </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Stack Section */}
+      <section id="stack" className="relative z-10 w-full">
+        <div className="max-w-6xl mx-auto px-6 py-20">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-br from-gray-800 via-gray-600 to-gray-900 bg-clip-text text-transparent leading-tight tracking-tight mb-4">
+              Stack
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Languages and Tools I use to build amazing applications
+            </p>
+          </motion.div>
+
+          {/* Backend Stack */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            viewport={{ once: true }}
+            className="mb-12"
+          >
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">Backend</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { name: 'Node.js', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg' },
+                { name: 'PHP', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg' },
+                { name: 'Laravel', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg' },
+                { name: 'REST APIs', icon: Package },
+                { name: 'SQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg' },
+                { name: 'n8n', icon: Workflow },
+                { name: 'C#', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg' },
+                { name: '.NET', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dot-net/dot-net-original.svg' }
+              ].map((tech, index) => (
+                <motion.div
+                  key={tech.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <LiquidGlass
+                    cornerRadius={12}
+                    padding="16px"
+                    blurAmount={0.6}
+                    saturation={110}
+                    elasticity={0.3}
+                    className="w-full h-full flex flex-col items-center justify-center text-center min-h-[80px] p-2"
+                  >
+                    <div className="flex items-center justify-center w-8 h-8 mb-2">
+                      {typeof tech.icon === 'string' ? (
+                        <img src={tech.icon} alt={tech.name} className="w-full h-full object-contain" />
+                      ) : (
+                        <tech.icon className="w-6 h-6 text-gray-600" />
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-black">{tech.name}</span>
+                  </LiquidGlass>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Frontend Stack */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+            viewport={{ once: true }}
+            className="mb-12"
+          >
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">Frontend</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { name: 'TypeScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg' },
+                { name: 'React', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg' },
+                { name: 'Next.js', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg' },
+                { name: 'HTML', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original-wordmark.svg' },
+                { name: 'CSS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original-wordmark.svg' },
+                { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg' },
+                { name: 'Tailwind', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg' },
+                { name: 'UI/UX', icon: Monitor }
+              ].map((tech, index) => (
+                <motion.div
+                  key={tech.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <LiquidGlass
+                    cornerRadius={12}
+                    padding="16px"
+                    blurAmount={0.6}
+                    saturation={110}
+                    elasticity={0.3}
+                    className="w-full h-full flex flex-col items-center justify-center text-center min-h-[80px] p-2"
+                  >
+                    <div className="flex items-center justify-center w-8 h-8 mb-2">
+                      {typeof tech.icon === 'string' ? (
+                        <img src={tech.icon} alt={tech.name} className="w-full h-full object-contain" />
+                      ) : (
+                        <tech.icon className="w-6 h-6 text-gray-600" />
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-black">{tech.name}</span>
+                  </LiquidGlass>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Other Tools */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">Other Tools</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { name: 'Git', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg' },
+                { name: 'Jira', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jira/jira-original.svg' },
+                { name: 'Docker', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-plain.svg' },
+                { name: 'Railway', icon: 'https://railway.com/brand/logo-dark.svg' },
+                { name: 'Vercel', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vercel/vercel-original.svg' },
+                { name: 'OpenAI API', icon: 'https://www.svgrepo.com/show/306500/openai.svg' },
+                { name: 'Redis', icon: 'https://www.svgrepo.com/show/303460/redis-logo.svg' }
+              ].map((tech, index) => (
+                <motion.div
+                  key={tech.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <LiquidGlass
+                    cornerRadius={12}
+                    padding="16px"
+                    blurAmount={0.6}
+                    saturation={110}
+                    elasticity={0.3}
+                    className="w-full h-full flex flex-col items-center justify-center text-center min-h-[80px]"
+                  >
+                    {typeof tech.icon === 'string' ? (
+                      <img src={tech.icon} alt={tech.name} className="w-8 h-8 mb-2 object-contain" />
+                    ) : (
+                      <tech.icon className="w-6 h-6 mb-2 text-gray-600" />
+                    )}
+                    <span className="text-sm font-medium text-black">{tech.name}</span>
+                  </LiquidGlass>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         </div>
       </section>
