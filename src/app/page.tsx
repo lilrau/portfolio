@@ -4,8 +4,9 @@ import FluidBackground from "../components/fluid";
 import LiquidGlass from "../components/LiquidGlass";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { User, FolderOpen, FileText, Mail, Code2, Server, Monitor, Package, Database, Workflow, Cog, Globe, Type, Atom, FileCode, Palette, GitBranch, Bug, Ship, Cloud, Brain } from 'lucide-react';
+import { User, FolderOpen, FileText, Mail, Code2, Server, Monitor, Package, Database, Workflow, Cog, Globe, Type, Atom, FileCode } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import React from 'react';
 
 export default function Home() {
   const [showHeader, setShowHeader] = useState(false);
@@ -288,9 +289,11 @@ export default function Home() {
                   >
                     <div className="flex items-center justify-center w-8 h-8 mb-2">
                       {typeof tech.icon === 'string' ? (
-                        <img src={tech.icon} alt={tech.name} className="w-full h-full object-contain" />
+                        <Image src={tech.icon} alt={tech.name} width={32} height={32} className="w-full h-full object-contain" />
                       ) : (
-                        <tech.icon className="w-6 h-6 text-gray-600" />
+                        <div className="w-6 h-6 text-gray-600">
+                          {React.createElement(tech.icon as React.ComponentType<{ className: string }>, { className: "w-full h-full" })}
+                        </div>
                       )}
                     </div>
                     <span className="text-sm font-medium text-black">{tech.name}</span>
@@ -337,9 +340,11 @@ export default function Home() {
                   >
                     <div className="flex items-center justify-center w-8 h-8 mb-2">
                       {typeof tech.icon === 'string' ? (
-                        <img src={tech.icon} alt={tech.name} className="w-full h-full object-contain" />
+                        <Image src={tech.icon} alt={tech.name} width={32} height={32} className="w-full h-full object-contain" />
                       ) : (
-                        <tech.icon className="w-6 h-6 text-gray-600" />
+                        <div className="w-6 h-6 text-gray-600">
+                          {React.createElement(tech.icon as React.ComponentType<{ className: string }>, { className: "w-full h-full" })}
+                        </div>
                       )}
                     </div>
                     <span className="text-sm font-medium text-black">{tech.name}</span>
@@ -382,11 +387,15 @@ export default function Home() {
                     elasticity={0.3}
                     className="w-full h-full flex flex-col items-center justify-center text-center min-h-[80px]"
                   >
-                    {typeof tech.icon === 'string' ? (
-                      <img src={tech.icon} alt={tech.name} className="w-8 h-8 mb-2 object-contain" />
-                    ) : (
-                      <tech.icon className="w-6 h-6 mb-2 text-gray-600" />
-                    )}
+                    <div className="flex items-center justify-center w-8 h-8 mb-2">
+                      {typeof tech.icon === 'string' ? (
+                        <Image src={tech.icon} alt={tech.name} width={32} height={32} className="w-full h-full object-contain" />
+                      ) : (
+                        <div className="w-6 h-6 text-gray-600">
+                          {React.createElement(tech.icon as React.ComponentType<{ className: string }>, { className: "w-full h-full" })}
+                        </div>
+                      )}
+                    </div>
                     <span className="text-sm font-medium text-black">{tech.name}</span>
                   </LiquidGlass>
                 </motion.div>
