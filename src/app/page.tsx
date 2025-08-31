@@ -3,13 +3,18 @@
 import FluidBackground from "../components/fluid";
 import LiquidGlass from "../components/LiquidGlass";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { User, FolderOpen, FileText, Mail, Code2, Server, Monitor, Package, Database, Workflow, Cog, Globe, Type, Atom, FileCode } from 'lucide-react';
+import { motion, AnimatePresence } from "framer-motion";
+import { User, FolderOpen, FileText, Mail, Code2,  Monitor, Package, Workflow } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import React from 'react';
+import projectsData from "../data/projects.json";
 
 export default function Home() {
   const [showHeader, setShowHeader] = useState(false);
+  const [currentImages, setCurrentImages] = useState<{ [key: string]: number }>({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalImages, setModalImages] = useState<string[]>([]);
+  const [currentModalImage, setCurrentModalImage] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +25,50 @@ export default function Home() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleImageNavigation = (projectId: string, direction: 'prev' | 'next', totalImages: number) => {
+    setCurrentImages(prev => {
+      const current = prev[projectId] || 0;
+      let nextIndex;
+      
+      if (direction === 'next') {
+        nextIndex = (current + 1) % totalImages;
+      } else {
+        nextIndex = (current - 1 + totalImages) % totalImages;
+      }
+      
+      return { ...prev, [projectId]: nextIndex };
+    });
+  };
+
+  const handleDotNavigation = (projectId: string, index: number) => {
+    setCurrentImages(prev => ({ ...prev, [projectId]: index }));
+  };
+
+  const openModal = (images: string[], startIndex: number) => {
+    setModalImages(images);
+    setCurrentModalImage(startIndex);
+    setModalOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setModalImages([]);
+    setCurrentModalImage(0);
+    document.body.style.overflow = 'unset';
+  };
+
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
+
+  const navigateModalImage = (direction: 'prev' | 'next') => {
+    setSlideDirection(direction === 'next' ? 'right' : 'left');
+    if (direction === 'next') {
+      setCurrentModalImage((prev) => (prev + 1) % modalImages.length);
+    } else {
+      setCurrentModalImage((prev) => (prev - 1 + modalImages.length) % modalImages.length);
+    }
+  };
 
   return (
     <main className="relative">
@@ -404,6 +453,256 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Projects Section */}
+      <section id="projects" className="relative z-10 w-full">
+        <div className="max-w-6xl mx-auto px-6 py-20">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-br from-gray-800 via-gray-600 to-gray-900 bg-clip-text text-transparent leading-tight tracking-tight mb-4">
+              Projects
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Here are some of the projects I&apos;ve worked on
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {projectsData.map((project, index) => (
+              <motion.div
+                key={project.title}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 + index * 0.2, ease: "easeOut" }}
+                viewport={{ once: true }}
+              >
+                <LiquidGlass
+                  cornerRadius={16}
+                  padding="24px"
+                  blurAmount={0.8}
+                  saturation={120}
+                  elasticity={0.4}
+                  className="w-full h-full"
+                >
+                  <div className="space-y-4">
+                    {/* Project Images Carousel */}
+                <div className="relative">
+                  <div className="relative w-full aspect-[16/9] max-h-80 overflow-hidden rounded-lg">
+                    {project.images.map((image, index) => (
+                      <motion.div
+                        key={index}
+                        className="absolute inset-0"
+                        initial={{ opacity: 0 }}
+                        animate={{ 
+                          opacity: (currentImages[project.title] || 0) === index ? 1 : 0 
+                        }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <div
+                          className="relative w-full h-full cursor-pointer group"
+                          onClick={() => openModal(project.images, index)}
+                        >
+                          <Image
+                            src={`/${image}`}
+                            alt={`${project.title} ${index + 1}`}
+                            fill
+                            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          />
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                  
+                  {/* Navigation Buttons */}
+                  {project.images.length > 1 && (
+                    <>
+                      {/* Previous Button */}
+                      <div
+                        onClick={() => handleImageNavigation(project.title, 'prev', project.images.length)}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all duration-300 z-10 hover:scale-110 cursor-pointer"
+                      >
+                        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </div>
+                      
+                      {/* Next Button */}
+                      <div
+                        onClick={() => handleImageNavigation(project.title, 'next', project.images.length)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all duration-300 z-10 hover:scale-110 cursor-pointer"
+                      >
+                        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                      
+                      {/* Dots Navigation */}
+                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                        {project.images.map((_, index) => (
+                          <div
+                            key={index}
+                            onClick={() => handleDotNavigation(project.title, index)}
+                            className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                              (currentImages[project.title] || 0) === index
+                                ? 'bg-white w-8'
+                                : 'bg-white/50 hover:bg-white/70'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                    {/* Project Info */}
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-gray-800">{project.title}</h3>
+                      <p className="text-sm font-medium text-gray-600">{project.subtitle}</p>
+                      <p className="text-sm text-gray-700 leading-relaxed">{project.description}</p>
+                    </div>
+
+                    {/* Project Links */}
+                    <div className="flex gap-4 pt-2">
+                      {project.link && (
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
+                        >
+                          Access
+                        </a>
+                      )}
+                      {project.github && (
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-lg hover:bg-gray-900 transition-colors"
+                        >
+                          GitHub
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </LiquidGlass>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Image Modal */}
+      {modalOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+          onClick={closeModal}
+        >
+          <div className="relative w-full h-full flex items-center justify-center p-4">
+            {/* Close Button */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8, y: -20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+              onClick={closeModal}
+              className="absolute top-4 right-4 z-50 p-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all duration-300 z-10"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </motion.button>
+
+            {/* Navigation Buttons */}
+            {modalImages.length > 1 && (
+              <>
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8, x: -50 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.3 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateModalImage('prev');
+                  }}
+                  className="absolute left-4 z-50 p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all duration-300"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </motion.button>
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8, x: 50 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.3 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateModalImage('next');
+                  }}
+                  className="absolute right-4 z-50 p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all duration-300"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </motion.button>
+              </>
+            )}
+
+            {/* Image Display */}
+            <div 
+              className="relative max-w-7xl max-h-[90vh] flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <AnimatePresence mode="wait" custom={slideDirection}>
+                <motion.div
+                  key={currentModalImage}
+                  custom={slideDirection}
+                  initial={{ opacity: 0, x: slideDirection === 'right' ? 100 : -100, scale: 0.9 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: slideDirection === 'right' ? -100 : 100, scale: 0.9 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  className="relative"
+                >
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                  >
+                    <Image
+                      src={`/${modalImages[currentModalImage]}`}
+                      alt="Enlarged project image"
+                      width={1920}
+                      height={1080}
+                      className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                      priority
+                    />
+                  </motion.div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Image Counter */}
+            {modalImages.length > 1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.3, delay: 0.4 }}
+                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 backdrop-blur-md text-white px-4 py-2 rounded-full text-sm"
+              >
+                {currentModalImage + 1} / {modalImages.length}
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
+      )}
     </main>
   );
 }

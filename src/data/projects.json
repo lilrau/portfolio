@@ -1,0 +1,43 @@
+[
+  {
+    "title": "Portfolio Website",
+    "subtitle": "My personal site. You are here!",
+    "description": "A simple and clean portfolio website to showcase my projects and skills.",
+        "images": [
+        "portfolio.png"
+    ],
+    "link": "https://lilrau-portfolio.vercel.app/",
+    "github": "https://github.com/lilrau/portfolio"
+  },
+  {
+    "title": "EduSaaS",
+    "subtitle": "Management SaaS for Vocational Schools with Automated Communication.",
+    "description": "A SaaS platform designed for managing professional training schools, featuring integration with WhatsApp APIs for automated billing contacts and class reminders. It also connects with financial institutions to automate boleto and installment tracking, streamlining administration and improving student engagement",
+    "images": [
+        "edusaas.png",
+        "edusaas1.png",
+        "edusaas2.png"
+    ],
+    "link": "https://edusaas.com.br"
+  },
+  {
+    "title": "AI Debt Negotiation Agent",
+    "subtitle": "AI Debt Negotiation Agent Integrated with AquiCob CRM and WhatsApp API.",
+    "description": "Migration of an AI-powered debt negotiation chatbot made by me with n8n workflows to a Node.js and Express application. Fully integrated with the CRM system to enable seamless management of client interactions, automate negotiation processes, and improve recovery rates through intelligent, real-time communication.",
+    "images": [
+        "ai_agent.jpg",
+        "ai_agent1.jpg",
+        "ai_agent2.jpg"
+    ]
+  },
+  {
+    "title": "Transport - FlyXSolutions",
+    "subtitle": " Enterprise Management Platform for Transportation",
+    "description": "A SaaP (Software as a Product) solution for business management tailored to transportation and freight companies. The software streamlines operational processes, including fleet management, route planning, invoicing, and client management, helping transport businesses increase efficiency and control costs.",
+        "images": [
+        "transwilson.jpg",
+        "transwilson1.jpg",
+        "transwilson2.jpg"
+    ]
+  }
+]
