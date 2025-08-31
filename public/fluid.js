@@ -46,22 +46,6 @@ if (promoPopup && promoPopupClose) {
     });
 }
 
-const appleLink = document.getElementById('apple_link');
-if (appleLink) {
-    appleLink.addEventListener('click', e => {
-        if (typeof ga === 'function') ga('send', 'event', 'link promo', 'app');
-        window.open('https://apps.apple.com/us/app/fluid-simulation/id1443124993');
-    });
-}
-
-const googleLink = document.getElementById('google_link');
-if (googleLink) {
-    googleLink.addEventListener('click', e => {
-        if (typeof ga === 'function') ga('send', 'event', 'link promo', 'app');
-        window.open('https://play.google.com/store/apps/details?id=games.paveldogreat.fluidsimfree');
-    });
-}
-
 // Simulation section
 
 const canvas = document.getElementById('fluid-canvas') || document.getElementsByTagName('canvas')[0];
@@ -71,16 +55,16 @@ let config = {
     SIM_RESOLUTION: 128,
     DYE_RESOLUTION: 1024,
     CAPTURE_RESOLUTION: 512,
-    DENSITY_DISSIPATION: 1.5,
-    VELOCITY_DISSIPATION: 1.45,
+    DENSITY_DISSIPATION: 1,
+    VELOCITY_DISSIPATION: 0.3,
     PRESSURE: 0.5,
-    PRESSURE_ITERATIONS: 20,
-    CURL: 5,
-    SPLAT_RADIUS: 0.05,
-    SPLAT_FORCE: 5000,
+    PRESSURE_ITERATIONS: 10,
+    CURL: 2,
+    SPLAT_RADIUS: 0.1,
+    SPLAT_FORCE: 2500,
     SHADING: true,
     COLORFUL: true,
-    COLOR_UPDATE_SPEED: 10,
+    COLOR_UPDATE_SPEED: 15,
     PAUSED: false,
     BACK_COLOR: { r: 255, g: 255, b: 255 },
     TRANSPARENT: false,
@@ -1178,7 +1162,7 @@ function updateKeywords () {
 
 updateKeywords();
 initFramebuffers();
-multipleSplats(parseInt(Math.random() * 20) + 5);
+// multipleSplats(parseInt(Math.random() * 20) + 5); // Removed initial color explosion
 
 let lastUpdateTime = Date.now();
 let colorUpdateTimer = 0.0;
@@ -1477,46 +1461,66 @@ let lastMouseX = 0;
 let lastMouseY = 0;
 let isMouseMoving = false;
 
-canvas.addEventListener('mousemove', e => {
-    let posX = scaleByPixelRatio(e.offsetX);
-    let posY = scaleByPixelRatio(e.offsetY);
+// Função para converter coordenadas da tela para coordenadas do canvas
+function getCanvasCoordinates(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    return {
+        x: scaleByPixelRatio(x),
+        y: scaleByPixelRatio(y)
+    };
+}
+
+// Adicionar listener no document para capturar movimento em toda a tela
+document.addEventListener('mousemove', e => {
+    const coords = getCanvasCoordinates(e.clientX, e.clientY);
+    let posX = coords.x;
+    let posY = coords.y;
     
-    // Calcular movimento do mouse
-    let deltaX = posX - lastMouseX;
-    let deltaY = posY - lastMouseY;
+    // Verificar se o mouse está dentro dos limites do canvas
+    const rect = canvas.getBoundingClientRect();
+    const isInsideCanvas = e.clientX >= rect.left && e.clientX <= rect.right && 
+                          e.clientY >= rect.top && e.clientY <= rect.bottom;
     
-    // Se o mouse se moveu significativamente
-    if (Math.abs(deltaX) > 1 || Math.abs(deltaY) > 1) {
-        let pointer = pointers[0];
+    if (isInsideCanvas) {
+        // Calcular movimento do mouse
+        let deltaX = posX - lastMouseX;
+        let deltaY = posY - lastMouseY;
         
-        // Simular mousedown se não estiver ativo
-        if (!pointer.down) {
-            updatePointerDownData(pointer, -1, posX, posY);
+        // Se o mouse se moveu significativamente
+        if (Math.abs(deltaX) > 1 || Math.abs(deltaY) > 1) {
+            let pointer = pointers[0];
+            
+            // Simular mousedown se não estiver ativo
+            if (!pointer.down) {
+                updatePointerDownData(pointer, -1, posX, posY);
+            }
+            
+            // Atualizar movimento
+            updatePointerMoveData(pointer, posX, posY);
+            
+            isMouseMoving = true;
+            
+            // Limpar timeout anterior se existir
+            if (pointer.moveTimeout) {
+                clearTimeout(pointer.moveTimeout);
+            }
+            
+            // Definir timeout para "soltar" o pointer após parar de mover
+            pointer.moveTimeout = setTimeout(() => {
+                updatePointerUpData(pointer);
+                isMouseMoving = false;
+            }, 100);
         }
         
-        // Atualizar movimento
-        updatePointerMoveData(pointer, posX, posY);
-        
-        isMouseMoving = true;
-        
-        // Limpar timeout anterior se existir
-        if (pointer.moveTimeout) {
-            clearTimeout(pointer.moveTimeout);
-        }
-        
-        // Definir timeout para "soltar" o pointer após parar de mover
-        pointer.moveTimeout = setTimeout(() => {
-            updatePointerUpData(pointer);
-            isMouseMoving = false;
-        }, 100);
+        lastMouseX = posX;
+        lastMouseY = posY;
     }
-    
-    lastMouseX = posX;
-    lastMouseY = posY;
 });
 
-// Limpar quando o mouse sair do canvas
-canvas.addEventListener('mouseleave', () => {
+// Limpar quando o mouse sair da janela
+document.addEventListener('mouseleave', () => {
     let pointer = pointers[0];
     if (pointer.down) {
         updatePointerUpData(pointer);
