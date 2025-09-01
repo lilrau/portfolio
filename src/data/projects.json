@@ -39,5 +39,13 @@
         "transwilson1.jpg",
         "transwilson2.jpg"
     ]
+  },
+  {
+    "title": "MEI-U",
+    "subtitle": "Academic Management Platform with Artificial Intelligence - UNESP Partnership",
+    "description": "Innovative platform for managing students and academic projects, using AI to match student skills with project needs. Developed by UTFPR and UNESP, it features student registration, performance tracking with KPIs, and automatic deadline notifications. The system uses a Euclidean distance algorithm for efficient allocation and is built with .NET, React, and Docker.",
+        "images": [
+        "meiu.png"
+    ]
   }
 ]
