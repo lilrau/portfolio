@@ -468,10 +468,7 @@ export default function Home() {
               Projects
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Here are some of my projects
-            </p>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              You can also check out my other projects on GitHub
+              Here are some of the projects I&apos;ve worked on
             </p>
           </motion.div>
 

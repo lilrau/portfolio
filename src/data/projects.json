@@ -47,5 +47,23 @@
         "images": [
         "meiu.png"
     ]
+  },
+  {
+    "title": "ChatCob",
+    "subtitle": "Chatwoot based app.",
+    "description": "ChatCob is a message and chatbot platform that uses Chatwoot. The platform is integrated with n8n workflows, WhatsApp API, and AquiCob CRM. The platform is used to manage client interactions, automate negotiation processes, and improve recovery rates through intelligent, real-time communication.",
+        "images": [
+        "chatcob.jpg"
+    ],
+    "link": "https://chat.aquicob.com.br"
+  },
+  {
+    "title": "AquiCob",
+    "subtitle": "Complete billing management platform.",
+    "description": "AquiCob is a complete CRM system for billing management. The platform contains billing, financial and cliente management, and integrations with WhatsApp API, n8n workflows, and financial institutions.",
+        "images": [
+        "aquicob.jpg"
+    ],
+    "link": "https://app.aquicob.com.br"
   }
 ]
