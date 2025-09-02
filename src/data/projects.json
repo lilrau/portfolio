@@ -62,7 +62,7 @@
     "subtitle": "Complete billing management platform.",
     "description": "AquiCob is a complete CRM system for billing management. The platform contains billing, financial and cliente management, and integrations with WhatsApp API, n8n workflows, and financial institutions.",
         "images": [
-        "aquicob.jpg"
+        "aquicob.png"
     ],
     "link": "https://app.aquicob.com.br"
   }

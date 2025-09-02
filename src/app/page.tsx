@@ -4,10 +4,23 @@ import FluidBackground from "../components/fluid";
 import LiquidGlass from "../components/LiquidGlass";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, FolderOpen, FileText, Mail, Code2,  Monitor, Package, Workflow } from 'lucide-react';
+import { User, FolderOpen, FileText, Mail, Code2,  Monitor, Package, Workflow, Github } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import React from 'react';
 import projectsData from "../data/projects.json";
+
+// Add this mock project after importing projectsData
+const allProjects = [
+  ...projectsData,
+  {
+    title: "You can also check other stuff on my github",
+    subtitle: "Click this card",
+    description: "",
+    images: [""], // No image, but keeps the design
+    link: "https://github.com/lilrau",
+    github: null
+  }
+];
 
 export default function Home() {
   const [showHeader, setShowHeader] = useState(false);
@@ -333,7 +346,7 @@ export default function Home() {
                     padding="16px"
                     blurAmount={0.6}
                     saturation={110}
-                    elasticity={0.3}
+                    elasticity={0.9}
                     className="w-full h-full flex flex-col items-center justify-center text-center min-h-[80px] p-2"
                   >
                     <div className="flex items-center justify-center w-8 h-8 mb-2">
@@ -384,7 +397,7 @@ export default function Home() {
                     padding="16px"
                     blurAmount={0.6}
                     saturation={110}
-                    elasticity={0.3}
+                    elasticity={0.9}
                     className="w-full h-full flex flex-col items-center justify-center text-center min-h-[80px] p-2"
                   >
                     <div className="flex items-center justify-center w-8 h-8 mb-2">
@@ -433,7 +446,7 @@ export default function Home() {
                     padding="16px"
                     blurAmount={0.6}
                     saturation={110}
-                    elasticity={0.3}
+                    elasticity={0.9}
                     className="w-full h-full flex flex-col items-center justify-center text-center min-h-[80px]"
                   >
                     <div className="flex items-center justify-center w-8 h-8 mb-2">
@@ -454,8 +467,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section id="projects" className="relative z-10 w-full">
+       {/* Projects Section */}
+       <section id="projects" className="relative z-10 w-full">
         <div className="max-w-6xl mx-auto px-6 py-20">
           <motion.div 
             className="text-center mb-16"
@@ -473,127 +486,128 @@ export default function Home() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {projectsData.map((project, index) => (
-              <motion.div
-                key={project.title}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 + index * 0.2, ease: "easeOut" }}
-                viewport={{ once: true }}
-              >
-                <LiquidGlass
-                  cornerRadius={16}
-                  padding="24px"
-                  blurAmount={0.8}
-                  saturation={120}
-                  elasticity={0.4}
-                  className="w-full h-full"
+            {allProjects.map((project, idx) => {
+              const isGithubCard = idx === allProjects.length - 1;
+              const projectId = `project-${idx}`;
+              return (
+                <motion.div
+                  key={project.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: idx * 0.1 }}
+                  viewport={{ once: true }}
                 >
-                  <div className="space-y-4">
-                    {/* Project Images Carousel */}
-                <div className="relative">
-                  <div className="relative w-full aspect-[16/9] max-h-80 overflow-hidden rounded-lg">
-                    {project.images.map((image, index) => (
-                      <motion.div
-                        key={index}
-                        className="absolute inset-0"
-                        initial={{ opacity: 0 }}
-                        animate={{ 
-                          opacity: (currentImages[project.title] || 0) === index ? 1 : 0 
-                        }}
-                        transition={{ duration: 0.5 }}
+                  {isGithubCard ? (
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block h-full w-full"
+                    >
+                      <LiquidGlass
+                        cornerRadius={18}
+                        padding="24px"
+                        blurAmount={0.8}
+                        saturation={120}
+                        elasticity={0.4}
+                        className="w-full h-full flex flex-col items-center justify-center text-center min-h-[320px] cursor-pointer group"
                       >
-                        <div
-                          className="relative w-full h-full cursor-pointer group"
-                          onClick={() => openModal(project.images, index)}
-                        >
-                          <Image
-                            src={`/${image}`}
-                            alt={`${project.title} ${index + 1}`}
-                            fill
-                            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          />
+                        <div className="flex flex-col items-center justify-center mb-4">
+                          <Github className="w-16 h-16 text-black/70 group-hover:text-black transition-all duration-200 mb-2" />
                         </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                  
-                  {/* Navigation Buttons */}
-                  {project.images.length > 1 && (
-                    <>
-                      {/* Previous Button */}
-                      <div
-                        onClick={() => handleImageNavigation(project.title, 'prev', project.images.length)}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all duration-300 z-10 hover:scale-110 cursor-pointer"
-                      >
-                        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
+                        <h3 className="text-xl font-bold text-black mb-2">{project.title}</h3>
+                        <p className="text-sm font-medium text-gray-600">{project.subtitle}</p>
+                      </LiquidGlass>
+                    </a>
+                  ) : (
+                    <LiquidGlass
+                      cornerRadius={16}
+                      padding="24px"
+                      blurAmount={0.8}
+                      saturation={120}
+                      elasticity={0.4}
+                      className="w-full h-full"
+                    >
+                      <div className="space-y-4">
+                        {/* Project Images Carousel */}
+                        <div className="relative">
+                          <div className="relative w-full aspect-[16/9] max-h-80 overflow-hidden rounded-lg">
+                            {project.images[0] ? (
+                              project.images.map((image, idx2) => (
+                                <motion.div
+                                  key={idx2}
+                                  className="absolute inset-0"
+                                  initial={{ opacity: 0 }}
+                                  animate={{
+                                    opacity: (currentImages[project.title] || 0) === idx2 ? 1 : 0
+                                  }}
+                                  transition={{ duration: 0.5 }}
+                                >
+                                  <div
+                                    className="relative w-full h-full cursor-pointer group"
+                                    onClick={() => openModal(project.images, idx2)}
+                                  >
+                                    <Image
+                                      src={`/${image}`}
+                                      alt={`${project.title} ${idx2 + 1}`}
+                                      fill
+                                      className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    />
+                                  </div>
+                                </motion.div>
+                              ))
+                            ) : (
+                              // Placeholder for the mock project (no image)
+                              <div className="flex items-center justify-center w-full h-full min-h-[180px] text-gray-400 text-lg">
+                                <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 18l-4-4-4 4m8-6l-4-4-4 4" />
+                                </svg>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Project Info */}
+                        <div className="space-y-2">
+                          <h3 className="text-xl font-bold text-gray-800">{project.title}</h3>
+                          {project.subtitle && (
+                            <p className="text-sm font-medium text-gray-600">{project.subtitle}</p>
+                          )}
+                          {project.description && (
+                            <p className="text-sm text-gray-700 leading-relaxed">{project.description}</p>
+                          )}
+                        </div>
+
+                        {/* Project Links */}
+                        <div className="flex gap-4 pt-2">
+                          {project.link && (
+                            <a
+                              href={project.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
+                            >
+                              Access
+                            </a>
+                          )}
+                          {project.github && (
+                            <a
+                              href={project.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-lg hover:bg-gray-900 transition-colors"
+                            >
+                              GitHub
+                            </a>
+                          )}
+                        </div>
                       </div>
-                      
-                      {/* Next Button */}
-                      <div
-                        onClick={() => handleImageNavigation(project.title, 'next', project.images.length)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all duration-300 z-10 hover:scale-110 cursor-pointer"
-                      >
-                        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                      
-                      {/* Dots Navigation */}
-                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-                        {project.images.map((_, index) => (
-                          <div
-                            key={index}
-                            onClick={() => handleDotNavigation(project.title, index)}
-                            className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                              (currentImages[project.title] || 0) === index
-                                ? 'bg-white w-8'
-                                : 'bg-white/50 hover:bg-white/70'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </>
+                    </LiquidGlass>
                   )}
-                </div>
-
-                    {/* Project Info */}
-                    <div className="space-y-2">
-                      <h3 className="text-xl font-bold text-gray-800">{project.title}</h3>
-                      <p className="text-sm font-medium text-gray-600">{project.subtitle}</p>
-                      <p className="text-sm text-gray-700 leading-relaxed">{project.description}</p>
-                    </div>
-
-                    {/* Project Links */}
-                    <div className="flex gap-4 pt-2">
-                      {project.link && (
-                        <a
-                          href={project.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
-                        >
-                          Access
-                        </a>
-                      )}
-                      {project.github && (
-                        <a
-                          href={project.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-lg hover:bg-gray-900 transition-colors"
-                        >
-                          GitHub
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </LiquidGlass>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -703,6 +717,167 @@ export default function Home() {
           </div>
         </motion.div>
       )}
+
+      {/* Resume Section */}
+      <section id="resume" className="relative z-10 w-full">
+         <div className="max-w-6xl mx-auto px-6 py-20">
+           <motion.div 
+             className="text-center mb-16"
+             initial={{ opacity: 0, y: 30 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, ease: "easeOut" }}
+             viewport={{ once: true }}
+           >
+             <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-br from-gray-800 via-gray-600 to-gray-900 bg-clip-text text-transparent leading-tight tracking-tight mb-4">
+               Resume
+             </h2>
+             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+               View my detailed professional profile and experience
+             </p>
+           </motion.div>
+
+           <motion.div 
+             className="flex justify-center"
+             initial={{ opacity: 0, y: 30 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+             viewport={{ once: true }}
+           >
+             <div className="w-full h-[800px] rounded-lg overflow-hidden">
+                 <iframe
+                   src="/raul_resume_en.pdf#toolbar=1&navpanes=1&scrollbar=1"
+                   className="w-full h-full border-0"
+                   title="Raul Resume"
+                 />
+               </div>
+           </motion.div>
+         </div>
+       </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="relative z-10 w-full">
+        <div className="max-w-6xl mx-auto px-6 py-20">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-br from-gray-800 via-gray-600 to-gray-900 bg-clip-text text-transparent leading-tight tracking-tight mb-4">
+              Contact
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Let&apos;s connect and create something amazing together
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Contact Links */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              <div className="space-y-4">
+                <a 
+                  href="https://linkedin.com/in/lilrau" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <LiquidGlass
+                    cornerRadius={12}
+                    padding="16px"
+                    blurAmount={0.6}
+                    saturation={110}
+                    elasticity={0.9}
+                    className="w-full"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 flex items-center justify-center bg-blue-500 rounded-full text-white flex-shrink-0">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-800">LinkedIn</h3>
+                        <p className="text-gray-600">linkedin.com/in/lilrau</p>
+                      </div>
+                    </div>
+                  </LiquidGlass>
+                </a>
+
+                <a 
+                  href="mailto:raulsscoc@hotmail.com" 
+                  className="block"
+                >
+                  <LiquidGlass
+                    cornerRadius={12}
+                    padding="16px"
+                    blurAmount={0.6}
+                    saturation={110}
+                    elasticity={0.9}
+                    className="w-full"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 flex items-center justify-center bg-blue-400 rounded-full text-white flex-shrink-0">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-800">Email</h3>
+                        <p className="text-gray-600">raulsscoc@hotmail.com</p>
+                      </div>
+                    </div>
+                  </LiquidGlass>
+                </a>
+
+                <a 
+                  href="https://discordapp.com/users/246318073815105547" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <LiquidGlass
+                    cornerRadius={12}
+                    padding="16px"
+                    blurAmount={0.6}
+                    saturation={110}
+                    elasticity={0.9}
+                    className="w-full"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 flex items-center justify-center bg-indigo-500 rounded-full text-white flex-shrink-0">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-800">Discord</h3>
+                        <p className="text-gray-600">@r.bxd</p>
+                      </div>
+                    </div>
+                  </LiquidGlass>
+                </a>
+              </div>
+            </motion.div>
+
+            {/* iPhone Mockup */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="flex justify-center md:justify-end"
+            >
+              <Image
+                src="/iPhone Call Mockup.png"
+                alt="iPhone Call Mockup"
+                width={450}
+                height={600}
+              />
+            </motion.div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
