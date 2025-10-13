@@ -1,5 +1,17 @@
 [
   {
+    "title": "AI Receptionist",
+    "subtitle": "An automated phone receptionist for a dental practice that handles appointment management and patient inquiries via voice calls.",
+    "description": "This project is an AI-powered virtual receptionist system, designed to handle calls naturally, schedule and manage appointments, answer common questions, handle urgent issues, and forward inquiries to the team — ensuring efficient, professional, and humanized customer service.",
+        "images": [
+        "dentalrecepcionist.png",
+        "dentalrecepcionist1.png",
+        "dentalrecepcionist2.png",
+        "dentalrecepcionist3.png",
+        "dentalrecepcionist4.png"
+    ]
+  },
+  {
     "title": "Portfolio Website",
     "subtitle": "My personal site. You are here!",
     "description": "A simple and clean portfolio website to showcase my projects and skills.",

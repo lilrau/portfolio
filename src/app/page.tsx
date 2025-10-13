@@ -8,6 +8,7 @@ import { User, FolderOpen, FileText, Mail, Code2,  Monitor, Package, Workflow, G
 import { useState, useEffect } from 'react';
 import React from 'react';
 import projectsData from "../data/projects.json";
+import { CodeTerminal } from "../components/CodeTerminal";
 
 // Add this mock project after importing projectsData
 const allProjects = [
@@ -86,7 +87,7 @@ export default function Home() {
   return (
     <main className="relative">
       <motion.div 
-        className="fixed top-0 left-0 w-full flex justify-center gap-4 p-4 z-50"
+        className="fixed top-2 left-0 w-full flex justify-center gap-4 p-4 z-50"
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: showHeader ? 1 : 0, y: showHeader ? 0 : -100 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
@@ -110,8 +111,10 @@ export default function Home() {
       <FluidBackground />
 
       {/* Hero Section */}
-      <section className="relative z-10 w-full min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-6 max-w-4xl mx-auto px-6 py-5 md:py-5">
+      <section className="relative z-10 w-full min-h-screen flex items-center">
+        <div className="mx-auto max-w-[1700px] px-8 py-5 md:py-5 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center space-y-6">
           {/* Nome e cargo com animação */}
           <motion.div 
             className="space-y-6"
@@ -175,9 +178,30 @@ export default function Home() {
                       block: 'start'
                     });
                   }, 200);
-                } if (item.label === 'Stack') {
+                } else if (item.label === 'Stack') {
                   setTimeout(() => {
                     document.getElementById('stack')?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                  }, 200);
+                } else if (item.label === 'Projects') {
+                  setTimeout(() => {
+                    document.getElementById('projects')?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                  }, 200);
+                } else if (item.label === 'Resume') {
+                  setTimeout(() => {
+                    document.getElementById('resume')?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                  }, 200);
+                } else if (item.label === 'Contact') {
+                  setTimeout(() => {
+                    document.getElementById('contact')?.scrollIntoView({
                       behavior: 'smooth',
                       block: 'start'
                     });
@@ -211,6 +235,19 @@ export default function Home() {
               );
             })}
           </motion.div>
+            </div>
+            {/* Terminal Column */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+              className="w-full lg:pl-8"
+            >
+              <div className="w-full h-[560px] md:h-[680px]">
+                <CodeTerminal />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -732,7 +769,8 @@ export default function Home() {
                Resume
              </h2>
              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-               View my detailed professional profile and experience
+               View my detailed professional profile and experience <br></br>
+               (Last update: September 2025, check LinkedIn for more details)
              </p>
            </motion.div>
 

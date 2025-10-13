@@ -1,0 +1,126 @@
+/* Basic terminal container styling */
+.terminal {
+  background: #212122; /* neutral dark gray */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.6);
+  color: #e2e8f0; /* slate-200 */
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+/* Header styling */
+.header {
+  background: #353535;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 12px 18px;
+}
+
+.terminalButton {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  opacity: 0.9;
+}
+
+.codeContent {
+  background: rgba(255, 255, 255, 0.02);
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  padding: 24px;
+}
+
+.codeContent::-webkit-scrollbar {
+  width: 8px;
+}
+
+.codeContent::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+
+.lineNumber {
+  color: #64748b; /* slate-500 */
+  min-width: 2ch;
+  text-align: right;
+}
+
+.codeLine {
+  white-space: pre-wrap; /* keep spaces but allow wrapping */
+  overflow-wrap: break-word; /* wrap at word boundaries to preserve indentation feel */
+  word-break: break-word;
+  tab-size: 2; /* keep tab indentation consistent */
+  font-size: 0.85rem;
+  line-height: 1.75;
+}
+
+.cursor {}
+
+.blinkingCursor {
+  display: inline-block;
+  width: 1ch;
+  animation: blink 1s step-start infinite;
+  color: #e2e8f0;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.footer {
+  background: #353535;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 8px 16px;
+}
+
+/* Syntax highlighting */
+.codeLine .keyword {
+  color: #93c5fd; /* blue-300 */
+  font-weight: 600;
+}
+
+.codeLine .string {
+  color: #86efac; /* green-300 */
+}
+
+.codeLine .type {
+  color: #22d3ee; /* cyan-400 */
+}
+
+.codeLine .property {
+  color: #fde68a; /* amber-200 */
+}
+
+.codeLine .boolean {
+  color: #c4b5fd; /* violet-300 */
+}
+
+.codeLine .function {
+  color: #60a5fa; /* blue-400 */
+}
+
+.codeLine .comment {
+  color: #94a3b8; /* slate-400 */
+  font-style: italic;
+}
+
+.codeLine .number {
+  color: #fca5a5; /* red-300 */
+}
+
+/* Global selectors ensure highlight applies to inserted HTML classes */
+.codeLine :global(.keyword) {
+  color: #93c5fd; /* blue-300 */
+  font-weight: 600;
+}
+
+.codeLine :global(.string) { color: #86efac; }
+.codeLine :global(.type) { color: #22d3ee; }
+.codeLine :global(.property) { color: #fde68a; }
+.codeLine :global(.boolean) { color: #c4b5fd; }
+.codeLine :global(.function) { color: #60a5fa; }
+.codeLine :global(.comment) { color: #94a3b8; font-style: italic; }
+.codeLine :global(.number) { color: #fca5a5; }
