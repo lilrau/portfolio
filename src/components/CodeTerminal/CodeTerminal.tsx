@@ -6,14 +6,14 @@ import { Text } from "../Text";
 import styles from "./CodeTerminal.module.scss";
 
 const CodeTerminal: React.FC = () => {
-  const [displayedLines, setDisplayedLines] = useState<string[]>([]);
+  const [displayedLines, setDisplayedLines] = useState<string[]>([""]);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
   const codeContentRef = React.useRef<HTMLDivElement>(null);
 
-  const renderCodeLine = (line: string, lineNumber: number) => {
-    let processedLine = line
+  const renderCodeLine = (line: string) => {
+    const processedLine = line
       .replace(/"([^"]*)"/g, '<span class="string">"$1"</span>')
       .replace(/\b(interface|async|function|const|await|return|export|class|extends|implements|import|from|type|enum)\b(?![^<]*>)/g, '<span class="keyword">$1</span>')
       .replace(/\b(SeniorDeveloper|SeniorEngineer|TechStack|CloudArchitect|string|boolean|number)\b(?![^<]*>)/g, '<span class="type">$1</span>')
@@ -26,7 +26,7 @@ const CodeTerminal: React.FC = () => {
     return processedLine;
   };
 
-  const fullCode = [
+  const fullCode = React.useMemo(() => [
     "interface SeniorDeveloper {",
     '  name: "Raul Souza Silva";',
     '  role: "Full-Stack Developer";',
@@ -62,7 +62,7 @@ const CodeTerminal: React.FC = () => {
     '  expertise: "AI automation, complex API integrations & the development of SaaS/SaaP systems",',
     '  certifications: ["Systems Analyst and Developer @ UTFPR", "English Certificate C1 Advanced @ EF SET"]',
     "};"
-  ];
+  ], []);
 
   useEffect(() => {
     if (!isTyping) return;
@@ -103,12 +103,7 @@ const CodeTerminal: React.FC = () => {
     return () => clearTimeout(timer);
   }, [currentCharIndex, currentLineIndex, isTyping, fullCode]);
 
-  // Initialize first line
-  useEffect(() => {
-    if (displayedLines.length === 0) {
-      setDisplayedLines([""]);
-    }
-  }, []);
+  // Removed init effect by initializing displayedLines state with one empty line
 
   return (
     <Flex
@@ -173,7 +168,7 @@ const CodeTerminal: React.FC = () => {
                 className={styles.codeLine}
                 style={{ paddingLeft: `${indentCh}ch` }}
                 dangerouslySetInnerHTML={{
-                  __html: content ? renderCodeLine(content, index + 1) : ' '
+                  __html: content ? renderCodeLine(content) : ' '
                 }}
               />
             </Flex>
