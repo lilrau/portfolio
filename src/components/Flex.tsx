@@ -256,37 +256,39 @@ const Flex = forwardRef<HTMLDivElement, ComponentProps>(
     );
 
     const parseDimension = (
-      value: number | SpacingToken | undefined,
+      value: string | number | SpacingToken | undefined,
       type: "width" | "height",
     ): string | undefined => {
       if (value === undefined) return undefined;
       if (typeof value === "number") return `${value}rem`;
-      if (
-        [
-          "0",
-          "1",
-          "2",
-          "4",
-          "8",
-          "12",
-          "16",
-          "20",
-          "24",
-          "32",
-          "40",
-          "48",
-          "56",
-          "64",
-          "80",
-          "104",
-          "128",
-          "160",
-        ].includes(value)
-      ) {
-        return `var(--static-space-${value})`;
-      }
-      if (["xs", "s", "m", "l", "xl"].includes(value)) {
-        return `var(--responsive-${type}-${value})`;
+      if (typeof value === "string") {
+        if (
+          [
+            "0",
+            "1",
+            "2",
+            "4",
+            "8",
+            "12",
+            "16",
+            "20",
+            "24",
+            "32",
+            "40",
+            "48",
+            "56",
+            "64",
+            "80",
+            "104",
+            "128",
+            "160",
+          ].includes(value)
+        ) {
+          return `var(--static-space-${value})`;
+        }
+        if (["xs", "s", "m", "l", "xl"].includes(value)) {
+          return `var(--responsive-${type}-${value})`;
+        }
       }
       return undefined;
     };
@@ -329,7 +331,7 @@ const Flex = forwardRef<HTMLDivElement, ComponentProps>(
       width: fillWidth ? "100%" : parseDimension(width, "width"),
       height: fillHeight ? "100%" : parseDimension(height, "height"),
       aspectRatio: aspectRatio,
-      textAlign: align,
+      textAlign: align === "start" ? "left" : align === "end" ? "right" : align === "stretch" ? undefined : align,
       ...style,
     };
 

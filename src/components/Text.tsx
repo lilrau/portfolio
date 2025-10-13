@@ -39,7 +39,7 @@ const Text = <T extends ElementType = "span">({
   className,
   ...props
 }: TypeProps<T>) => {
-  const Component = as || "span";
+  const Component: ElementType = as || "span";
 
   if (variant && (size || weight)) {
     console.warn("When 'variant' is set, 'size' and 'weight' are ignored.");
