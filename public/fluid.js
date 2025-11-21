@@ -79,6 +79,24 @@ let config = {
     SUNRAYS_WEIGHT: 1.0,
 }
 
+function applyThemeBackground () {
+    const theme = document.documentElement.getAttribute('data-theme');
+    if (theme === 'dark') {
+        config.BACK_COLOR = { r: 2, g: 6, b: 23 };
+    } else {
+        config.BACK_COLOR = { r: 255, g: 255, b: 255 };
+    }
+}
+
+applyThemeBackground();
+
+if (typeof MutationObserver !== 'undefined') {
+    const observer = new MutationObserver(() => {
+        applyThemeBackground();
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+}
+
 function pointerPrototype () {
     this.id = -1;
     this.texcoordX = 0;

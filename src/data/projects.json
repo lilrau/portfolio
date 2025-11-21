@@ -1,81 +1,84 @@
 [
   {
+    "title": "Amazoca",
+    "subtitle": "",
+    "description": "An online marketplace for short-term rentals, experiences, and services that connects property owners (hosts) with travelers (guests), focused on the heart of Amazonia. The platform is powered by AI to provide personalized recommendations and improve the user experience.",
+    "images": ["amazoca.png", "amazoca1.png"],
+    "tech_tags": ["React", "Node.js", "n8n", "OpenAI API", "PostgreSQL", "Supabase", "Next.js", "VectorDB", "Docker"]
+  },
+  {
+    "title": "Hi App",
+    "subtitle": "",
+    "description": "A business management platform for independent professionals, including a web-based application (formerly also a mobile app) that helps them manage their schedules and clients",
+    "images": ["hiapp.png", "hiapp1.png", "hiapp2.png"],
+    "tech_tags": ["React", "Node.js", "n8n", "OpenAI API", "PostgreSQL", "Supabase", "Docker"]
+  },
+  {
     "title": "AI Receptionist",
     "subtitle": "An automated phone receptionist for a dental practice that handles appointment management and patient inquiries via voice calls.",
     "description": "This project is an AI-powered virtual receptionist system, designed to handle calls naturally, schedule and manage appointments, answer common questions, handle urgent issues, and forward inquiries to the team — ensuring efficient, professional, and humanized customer service.",
-        "images": [
-        "dentalrecepcionist.png",
-        "dentalrecepcionist1.png",
-        "dentalrecepcionist2.png",
-        "dentalrecepcionist3.png",
-        "dentalrecepcionist4.png"
-    ]
+    "images": [
+      "dentalrecepcionist0.png",
+      "dentalrecepcionist.png",
+      "dentalrecepcionist1.png",
+      "dentalrecepcionist2.png",
+      "dentalrecepcionist3.png",
+      "dentalrecepcionist4.png"
+    ],
+    "tech_tags": ["n8n", "Retell AI", "OpenAI API", "Eleven Labs", "VectorDB"]
   },
   {
     "title": "Portfolio Website",
     "subtitle": "My personal site. You are here!",
     "description": "A simple and clean portfolio website to showcase my projects and skills.",
-        "images": [
-        "portfolio.png"
-    ],
+    "images": ["portfolio.png"],
     "link": "https://lilrau-portfolio.vercel.app/",
-    "github": "https://github.com/lilrau/portfolio"
+    "github": "https://github.com/lilrau/portfolio",
+    "tech_tags": ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"]
   },
   {
     "title": "EduSaaS",
     "subtitle": "Management SaaS for Vocational Schools with Automated Communication.",
     "description": "A SaaS platform designed for managing professional training schools, featuring integration with WhatsApp APIs for automated billing contacts and class reminders. It also connects with financial institutions to automate boleto and installment tracking, streamlining administration and improving student engagement",
-    "images": [
-        "edusaas.png",
-        "edusaas1.png",
-        "edusaas2.png"
-    ],
-    "link": "https://edusaas.com.br"
+    "images": ["edusaas.png", "edusaas1.png", "edusaas2.png"],
+    "link": "https://edusaas.com.br",
+    "tech_tags": ["React", "Laravel", "PostgreSQL", "Tailwind CSS", "PHP", "TypeScript"]
   },
   {
     "title": "AI Debt Negotiation Agent",
     "subtitle": "AI Debt Negotiation Agent Integrated with AquiCob CRM and WhatsApp API.",
     "description": "Migration of an AI-powered debt negotiation chatbot made by me with n8n workflows to a Node.js and Express application. Fully integrated with the CRM system to enable seamless management of client interactions, automate negotiation processes, and improve recovery rates through intelligent, real-time communication.",
-    "images": [
-        "ai_agent.jpg",
-        "ai_agent1.jpg",
-        "ai_agent2.jpg"
-    ]
+    "images": ["ai_agent.jpg", "ai_agent1.jpg", "ai_agent2.jpg"],
+    "tech_tags": ["Node.js", "Express", "n8n", "Retell AI", "OpenAI API", "ChatWoot", "MySQL", "WhatsApp API"]
   },
   {
     "title": "Transport - FlyXSolutions",
     "subtitle": " Enterprise Management Platform for Transportation",
     "description": "A SaaP (Software as a Product) solution for business management tailored to transportation and freight companies. The software streamlines operational processes, including fleet management, route planning, invoicing, and client management, helping transport businesses increase efficiency and control costs.",
-        "images": [
-        "transwilson.jpg",
-        "transwilson1.jpg",
-        "transwilson2.jpg"
-    ]
+    "images": ["transwilson.jpg", "transwilson1.jpg", "transwilson2.jpg"],
+    "tech_tags": ["React", "Next.js", "TypeScript", "Tailwind CSS", "Node.js", "PostgreSQL", "Supabase", "Vercel"]
   },
   {
     "title": "MEI-U",
     "subtitle": "Academic Management Platform with Artificial Intelligence - UNESP Partnership",
     "description": "Innovative platform for managing students and academic projects, using AI to match student skills with project needs. Developed by UTFPR and UNESP, it features student registration, performance tracking with KPIs, and automatic deadline notifications. The system uses a Euclidean distance algorithm for efficient allocation and is built with .NET, React, and Docker.",
-        "images": [
-        "meiu.png"
-    ]
+    "images": ["meiu.png"],
+    "tech_tags": ["C#", "JavaScript", "Docker", "Python"]
   },
   {
     "title": "ChatCob",
     "subtitle": "Chatwoot based app.",
     "description": "ChatCob is a message and chatbot platform that uses Chatwoot. The platform is integrated with n8n workflows, WhatsApp API, and AquiCob CRM. The platform is used to manage client interactions, automate negotiation processes, and improve recovery rates through intelligent, real-time communication.",
-        "images": [
-        "chatcob.jpg"
-    ],
-    "link": "https://chat.aquicob.com.br"
+    "images": ["chatcob.jpg"],
+    "link": "https://chat.aquicob.com.br",
+    "tech_tags": ["n8n", "Chatwoot", "MySQL", "WhatsApp API"]
   },
   {
     "title": "AquiCob",
     "subtitle": "Complete billing management platform.",
     "description": "AquiCob is a complete CRM system for billing management. The platform contains billing, financial and cliente management, and integrations with WhatsApp API, n8n workflows, and financial institutions.",
-        "images": [
-        "aquicob.png"
-    ],
-    "link": "https://app.aquicob.com.br"
+    "images": ["aquicob.png"],
+    "link": "https://app.aquicob.com.br",
+    "tech_tags": ["PHP", "MySQL", "n8n", "WhatsApp API"]
   }
 ]
