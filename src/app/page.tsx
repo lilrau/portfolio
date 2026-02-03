@@ -82,7 +82,8 @@ export default function Home() {
       setTheme(stored);
       return;
     }
-    setTheme("dark");
+
+    setTheme("light");
   }, []);
 
   useEffect(() => {
@@ -255,27 +256,26 @@ export default function Home() {
   };
 
   const renderThemeToggle = () => (
-    <button
+    <LiquidGlass
       onClick={toggleTheme}
-      className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/70 px-3 py-1 text-xs font-medium text-gray-800 hover:bg-white/90 hover:text-gray-900 transition-colors"
+      cornerRadius={999}
+      padding="10px"
+      blurAmount={0.6}
+      saturation={130}
+      elasticity={0.8}
+      className="cursor-pointer flex items-center justify-center text-xs md:text-sm min-h-[36px] w-9"
     >
       {theme === "dark" ? (
-        <>
-          <Sun className="w-4 h-4" />
-          <span>Light</span>
-        </>
+        <Sun className="w-4 h-4 text-gray-800" />
       ) : (
-        <>
-          <Moon className="w-4 h-4" />
-          <span>Dark</span>
-        </>
+        <Moon className="w-4 h-4 text-gray-800" />
       )}
-    </button>
+    </LiquidGlass>
   );
 
   return (
     <main className="relative">
-      <div className="fixed top-4 right-4 z-[60]">{renderThemeToggle()}</div>
+      <div className="fixed top-6 right-6 z-[60]">{renderThemeToggle()}</div>
       <motion.div
         className="fixed top-2 left-0 w-full flex justify-center p-4 z-50"
         initial={{ opacity: 0, y: -100 }}
@@ -933,9 +933,8 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: idx * 0.1 }}
                     viewport={{ once: true }}
-                    className={`group relative h-full ${
-                      idx % 2 === 1 ? "lg:mt-16" : ""
-                    }`}
+                    className={`group relative h-full ${idx % 2 === 1 ? "lg:mt-16" : ""
+                      }`}
                   >
                     <div className="relative h-full rounded-[2.5rem] overflow-hidden border border-white/20 bg-white/5 backdrop-blur-xl shadow-[0_18px_60px_rgba(15,23,42,0.18)] transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_24px_80px_rgba(15,23,42,0.35)]">
                       <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/20 to-transparent opacity-70 pointer-events-none" />
@@ -989,11 +988,10 @@ export default function Home() {
                                         dotIdx
                                       );
                                     }}
-                                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                                      currentIndex === dotIdx
-                                        ? "w-6 bg-white"
-                                        : "w-2 bg-white/40 hover:bg-white/70"
-                                    }`}
+                                    className={`h-1.5 rounded-full transition-all duration-300 ${currentIndex === dotIdx
+                                      ? "w-6 bg-white"
+                                      : "w-2 bg-white/40 hover:bg-white/70"
+                                      }`}
                                     aria-label={`Go to image ${dotIdx + 1}`}
                                   />
                                 ))}
