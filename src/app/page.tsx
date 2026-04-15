@@ -1264,7 +1264,7 @@ export default function Home() {
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               View my detailed professional profile and experience <br></br>
-              (Last update: September 2025, check LinkedIn for more details)
+              (Last update: February 2026, check LinkedIn for more details)
             </p>
           </motion.div>
 
