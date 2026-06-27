@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Raul Souza Dev",
-  description: "Full Stack Developer Portfolio",
+  description: "Full Stack Engineer Portfolio",
   icons: {
     icon: "/memoji.ico",
   },

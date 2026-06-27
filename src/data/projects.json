@@ -8,7 +8,7 @@
   },
   {
     "title": "Hi App",
-    "subtitle": "",
+    "subtitle": "WhatsApp AI Enabled",
     "description": "A business management platform for independent professionals, including a web-based application (formerly also a mobile app) that helps them manage their schedules and clients",
     "images": ["hiapp.png", "hiapp1.png", "hiapp2.png"],
     "tech_tags": ["React", "Node.js", "n8n", "OpenAI API", "PostgreSQL", "Supabase", "Docker"]
@@ -26,15 +26,6 @@
       "dentalrecepcionist4.png"
     ],
     "tech_tags": ["n8n", "Retell AI", "OpenAI API", "Eleven Labs", "VectorDB"]
-  },
-  {
-    "title": "Portfolio Website",
-    "subtitle": "My personal site. You are here!",
-    "description": "A simple and clean portfolio website to showcase my projects and skills.",
-    "images": ["portfolio.png"],
-    "link": "https://lilrau-portfolio.vercel.app/",
-    "github": "https://github.com/lilrau/portfolio",
-    "tech_tags": ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"]
   },
   {
     "title": "EduSaaS",
@@ -60,18 +51,10 @@
   },
   {
     "title": "MEI-U",
-    "subtitle": "Academic Management Platform with Artificial Intelligence - UNESP Partnership",
+    "subtitle": "UTFPR x UNESP Partnership",
     "description": "Innovative platform for managing students and academic projects, using AI to match student skills with project needs. Developed by UTFPR and UNESP, it features student registration, performance tracking with KPIs, and automatic deadline notifications. The system uses a Euclidean distance algorithm for efficient allocation and is built with .NET, React, and Docker.",
     "images": ["meiu.png"],
     "tech_tags": ["C#", "JavaScript", "Docker", "Python"]
-  },
-  {
-    "title": "ChatCob",
-    "subtitle": "Chatwoot based app.",
-    "description": "ChatCob is a message and chatbot platform that uses Chatwoot. The platform is integrated with n8n workflows, WhatsApp API, and AquiCob CRM. The platform is used to manage client interactions, automate negotiation processes, and improve recovery rates through intelligent, real-time communication.",
-    "images": ["chatcob.jpg"],
-    "link": "https://chat.aquicob.com.br",
-    "tech_tags": ["n8n", "Chatwoot", "MySQL", "WhatsApp API"]
   },
   {
     "title": "AquiCob",

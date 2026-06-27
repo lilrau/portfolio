@@ -40,6 +40,20 @@ type TechTagConfig = {
   Icon?: React.ComponentType<{ className?: string }>;
 };
 
+const techIconOffsetClass: Record<string, string> = {
+  "node.js": "translate-x-1.5",
+  laravel: "translate-x-2.5",
+  typescript: "translate-x-5.5",
+  javascript: "translate-x-4.5",
+  tailwind: "translate-x-2.5",
+  "openai api": "translate-x-6.5",
+  react: "translate-x-0.5",
+  "next.js": "translate-x-1.5",
+  docker: "translate-x-2.5",
+  render: "translate-x-2",
+  vercel: "translate-x-1.5",
+};
+
 // Add this mock project after importing projectsData
 const allProjects: Project[] = [
   ...(projectsData as Project[]),
@@ -348,7 +362,7 @@ export default function Home() {
                   Raul Souza Silva
                 </h1>
                 <p className="text-lg md:text-xl text-gray-600 font-extralight tracking-widest mt-8">
-                  Full Stack Developer
+                  Full Stack Engineer
                 </p>
               </motion.div>
 
@@ -497,7 +511,7 @@ export default function Home() {
               <div className="relative">
                 <Image
                   src="/dev_pic_blur_bg.png"
-                  alt="Raul Souza Silva - Full Stack Developer"
+                  alt="Raul Souza Silva - Full Stack Engineer"
                   width={400}
                   height={500}
                   className="rounded-2xl shadow-2xl"
@@ -523,18 +537,15 @@ export default function Home() {
 
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p className="text-lg">
-                  Full Stack Developer with over 2 years of experience building
-                  scalable web applications and robust solutions. My background
-                  includes working in tech companies as well as developing
-                  custom freelance projects.
+                  Full Stack Engineer focused on building scalable web applications and AI-enabled product experiences.
+                  Experienced in designing and delivering end-to-end solutions across frontend, backend, and infrastructure.
                 </p>
 
                 <p className="text-lg">
-                  My work focuses on process optimization through automation,
-                  complex API integrations, and the development of SaaS/SaaP
-                  systems. I leverage technologies like TypeScript, React,
-                  Next.js, and Laravel to create secure, high-performance
-                  solutions, always prioritizing the user experience.
+                  Built recommendation systems, automation workflows, internal platforms, and customer-facing products, 
+                  taking features from concept to production while contributing to technical
+                  decisions and system architecture. Passionate about working close to product teams, understanding 
+                  user problems, and building reliable software that creates measurable impact.
                 </p>
 
                 <p className="text-lg">
@@ -551,23 +562,23 @@ export default function Home() {
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-start">
                       <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                      Building end-to-end web applications with a focus on
-                      performance and usability.
+                      Driving engineering autonomy through proactive ownership, technical decision-making, 
+                      and initiatives that improve team efficiency and scalability.
                     </li>
                     <li className="flex items-start">
                       <span className="w-2 h-2 bg-green-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                      Complex integrations between financial system APIs,
-                      databases, and automation platforms (n8n).
+                      Maintaining clear and transparent communication across engineering, product, and 
+                      business stakeholders to ensure alignment and effective execution.
                     </li>
                     <li className="flex items-start">
                       <span className="w-2 h-2 bg-purple-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                      Technical leadership, including backlog management, task
-                      delegation, and alignment with stakeholders.
+                      Building end-to-end software solutions, from architecture and backend systems to 
+                      user-facing applications, with integrated AI capabilities.
                     </li>
                     <li className="flex items-start">
                       <span className="w-2 h-2 bg-orange-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                      Developing intelligent systems with applied AI for process
-                      automation.
+                      Designing and implementing advanced agentic workflows using AI orchestration patterns 
+                      to automate complex processes and enhance operational efficiency.
                     </li>
                   </ul>
                 </div>
@@ -623,12 +634,14 @@ export default function Home() {
                   name: "Laravel",
                   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg",
                 },
-                { name: "REST APIs", icon: Package },
+                { name: "Java", 
+                  icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" },
                 {
                   name: "SQL",
                   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg",
                 },
-                { name: "n8n", icon: Workflow },
+                { name: "n8n", 
+                  icon: "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-svg/icons/n8n-color.svg" },
                 {
                   name: "C#",
                   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg",
@@ -660,7 +673,7 @@ export default function Home() {
                           alt={tech.name}
                           width={32}
                           height={32}
-                          className="w-full h-full object-contain"
+                          className={`w-full h-full object-contain ${techIconOffsetClass[tech.name.toLowerCase()] ?? ""}`}
                         />
                       ) : (
                         <div className="w-6 h-6 text-gray-600">
@@ -723,7 +736,6 @@ export default function Home() {
                   name: "Tailwind",
                   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
                 },
-                { name: "UI/UX", icon: Monitor },
               ].map((tech, index) => (
                 <motion.div
                   key={tech.name}
@@ -747,7 +759,7 @@ export default function Home() {
                           alt={tech.name}
                           width={32}
                           height={32}
-                          className="w-full h-full object-contain"
+                          className={`w-full h-full object-contain ${techIconOffsetClass[tech.name.toLowerCase()] ?? ""}`}
                         />
                       ) : (
                         <div className="w-6 h-6 text-gray-600">
@@ -794,8 +806,8 @@ export default function Home() {
                   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-plain.svg",
                 },
                 {
-                  name: "Railway",
-                  icon: "https://railway.com/brand/logo-dark.svg",
+                  name: "Render",
+                  icon: "https://global.discourse-cdn.com/netlify/original/3X/1/1/11352202c8503f736bea5efb59684f678d7c860c.svg",
                 },
                 {
                   name: "Vercel",
@@ -832,7 +844,7 @@ export default function Home() {
                           alt={tech.name}
                           width={32}
                           height={32}
-                          className="w-full h-full object-contain"
+                          className={`w-full h-full object-contain ${techIconOffsetClass[tech.name.toLowerCase()] ?? ""}`}
                         />
                       ) : (
                         <div className="w-6 h-6 text-gray-600">
@@ -1263,8 +1275,8 @@ export default function Home() {
               Resume
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              View my detailed professional profile and experience <br></br>
-              (Last update: February 2026, check LinkedIn for more details)
+              View my curriculum vitae.<br></br>
+              (Last update: June 2026, check LinkedIn for more details)
             </p>
           </motion.div>
 
