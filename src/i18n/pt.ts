@@ -69,8 +69,8 @@ export const pt: Dictionary = {
   },
   contact: {
     eyebrow: "Contato",
-    titleBefore: "Vamos construir algo ",
-    titleAccent: "confiável",
+    titleBefore: "Vamos tornar a vida das pessoas mais fácil com softwares que elas ",
+    titleAccent: "amam",
     titleAfter: ".",
     intro: "O jeito mais rápido de falar comigo é por e-mail.",
     copy: "Copiar e-mail",

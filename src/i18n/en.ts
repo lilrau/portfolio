@@ -67,8 +67,8 @@ export const en = {
   },
   contact: {
     eyebrow: "Contact",
-    titleBefore: "Let's build something ",
-    titleAccent: "reliable",
+    titleBefore: "Let's make people's lives easier with software they ",
+    titleAccent: "love",
     titleAfter: ".",
     intro: "The fastest way to reach me is email.",
     copy: "Copy email",
