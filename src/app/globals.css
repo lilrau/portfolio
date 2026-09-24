@@ -1,56 +1,80 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-:root[data-theme="dark"] {
-  --background: #020617;
-  --foreground: #f9fafb;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@import "../styles/tokens.css";
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  text-rendering: optimizeLegibility;
+  /* Safety net for the brief's "no horizontal scroll"; clip keeps sticky working */
+  overflow-x: clip;
 }
 
-:root[data-theme="dark"] .text-black,
-:root[data-theme="dark"] .text-gray-800,
-:root[data-theme="dark"] .text-gray-700 {
-  color: #e5e7eb;
+html {
+  overflow-x: clip;
 }
 
-:root[data-theme="dark"] .text-gray-600 {
-  color: #d1d5db;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
-:root[data-theme="dark"] .text-gray-500 {
-  color: #9ca3af;
+/* The glass lens replaces the pointer only while it is actually running
+   (GlassCursor adds the class); form fields always keep the native cursor. */
+html.has-glass-cursor,
+html.has-glass-cursor * {
+  cursor: none !important;
+}
+html.has-glass-cursor :is(input, textarea, select, [contenteditable="true"]) {
+  cursor: auto !important;
 }
 
-:root[data-theme="dark"] .tech-tag {
-  background-color: rgba(30, 41, 59, 0.5) !important; /* slate-800/50 */
-  border-color: currentColor !important;
-  backdrop-filter: blur(8px);
+/* Lenis drives scrolling on desktop; native smooth scrolling would fight it */
+html.lenis {
+  scroll-behavior: auto;
 }
 
-/* Ajuste para tags roxas/rosas no dark mode */
-:root[data-theme="dark"] .tech-tag.text-indigo-700,
-:root[data-theme="dark"] .tech-tag.text-purple-700 {
-  color: #c4b5fd !important; /* violet-300 - mais claro */
+/* Legibility over the fluid: a halo in the page colour. Invisible on the flat
+   background, it only shows when a saturated splat drifts behind text that has
+   no glass under it. Solid buttons opt out (the halo would blur their label). */
+main,
+footer {
+  text-shadow:
+    0 0 2px var(--color-bg-primary),
+    0 0 14px color-mix(in srgb, var(--color-bg-primary) 80%, transparent),
+    0 0 32px color-mix(in srgb, var(--color-bg-primary) 55%, transparent);
+}
+:is(.bg-accent, .bg-ink, [class*="hover:bg-ink"]:hover),
+:is(.bg-accent, .bg-ink, [class*="hover:bg-ink"]:hover) * {
+  text-shadow: none;
+}
+/* The hero sits on its own washed landscape, which hides the fluid; the halo
+   would only read as a glow against the photo. */
+#top {
+  text-shadow: none;
 }
 
-:root[data-theme="dark"] .tech-tag.text-\[\#EA4B71\] {
-  color: #fb7185 !important; /* rose-400 - mais claro */
+/* Uppercase mono label: eyebrows, periods, metadata */
+@utility eyebrow {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  line-height: 1.35;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+::selection {
+  background: var(--color-accent-primary);
+  color: var(--color-on-accent);
+}
+
+@keyframes scroll-cue {
+  0% { transform: translateY(-100%); }
+  60%, 100% { transform: translateY(200%); }
+}
+
+/* Preloader only exists while the intro is pending (set by the inline head script) */
+html:not([data-intro="pending"]) .preloader {
+  display: none;
 }

@@ -1,0 +1,265 @@
+/*
+ * Design tokens — "Liquid Editorial"
+ * Source: .design/portfolio-premium/DESIGN_BRIEF.md
+ *
+ * Liquid glass (Apple visionOS / iOS 26) over the interactive fluid,
+ * plus award-portfolio editorial typography (display serif + grotesk).
+ * Content is near-monochrome and cool; the fluid carries the colour.
+ *
+ * Single light palette.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* ── Color: backgrounds ─────────────────────────────────────────── */
+  --color-bg-primary: #f3f4f7;          /* page + fluid BACK_COLOR */
+  --color-bg-secondary: #fbfbfd;        /* opaque card fallback */
+  --color-bg-tertiary: #e8eaef;         /* wells, image placeholders */
+  --color-bg-inverse: #0b0d12;
+
+  /* ── Color: text ────────────────────────────────────────────────── */
+  --color-text-primary: #0b0d12;        /* 17.7:1 on bg */
+  --color-text-secondary: #454b59;      /* 7.7:1 on bg, ≥5.3:1 on glass over fluid */
+  --color-text-tertiary: #646a79;       /* 4.9:1 on bg — metadata only, never on glass over fluid */
+  --color-text-inverse: #f3f4f7;
+  --color-text-link: var(--color-accent-primary);
+
+  /* ── Color: borders ─────────────────────────────────────────────── */
+  --color-border-primary: rgb(11 13 18 / 0.12);
+  --color-border-secondary: rgb(11 13 18 / 0.06);
+  --color-border-focus: var(--color-accent-primary);
+
+  /* ── Color: accent (derived from the fluid palette) ─────────────── */
+  --color-accent-primary: #3346d3;      /* 6.5:1 on bg; white text on it 7.1:1 */
+  --color-accent-primary-hover: #2a39b8;
+  --color-accent-primary-active: #212e97;
+  --color-accent-secondary: #7c3aed;    /* sparing: italic serif accents only */
+  --color-on-accent: #ffffff;
+
+  /* ── Color: status ──────────────────────────────────────────────── */
+  --color-status-success: #1e7a4e;
+  --color-status-warning: #9a5b00;
+  --color-status-error: #b4232f;
+  --color-status-info: var(--color-accent-primary);
+
+  /* ── Color: overlay ─────────────────────────────────────────────── */
+  --color-surface-overlay: rgb(243 244 247 / 0.55);   /* project detail backdrop */
+
+  /* ── Glass (liquid glass surfaces) ─────────────────────────────── */
+  --glass-tint: rgb(255 255 255 / 0.7);               /* guarantees AA over saturated fluid */
+  --glass-tint-strong: rgb(255 255 255 / 0.82);       /* nav, overlay panel, mobile sheet */
+  --glass-tint-subtle: rgb(255 255 255 / 0.4);        /* cursor lens, decorative pills */
+  --glass-blur: 18px;
+  --glass-blur-strong: 28px;
+  --glass-saturate: 180%;
+  --glass-border: rgb(255 255 255 / 0.65);            /* outer rim */
+  --glass-highlight: rgb(255 255 255 / 0.9);          /* specular top edge */
+  --glass-shade: rgb(11 13 18 / 0.06);                /* inner bottom edge */
+  --glass-edge-tint: rgb(255 255 255 / 0.14);         /* bezel ring where refraction shows */
+  --glass-blur-refract: 2px;                          /* light blur when refraction is on */
+  --glass-refraction: 40;                             /* feDisplacementMap scale (Chromium) */
+  --glass-refraction-lens: 70;                        /* cursor lens */
+  --glass-aberration: 1.5;                            /* px, chromatic fringe on lens */
+
+  /* ── Fluid (read by public/fluid.js at runtime) ─────────────────── */
+  --fluid-back: 243 244 247;            /* RGB triplet, must match --color-bg-primary */
+  --fluid-intensity: 0.12;              /* splat colour multiplier (was 0.15 rainbow) */
+  --fluid-burst: 10;                    /* extra gain for automatic bursts (preloader) */
+  --fluid-color-1: #3346d3;             /* indigo */
+  --fluid-color-2: #5b6cff;             /* periwinkle */
+  --fluid-color-3: #7c3aed;             /* violet */
+  --fluid-color-4: #2563eb;             /* blue */
+  --fluid-color-5: #06b6d4;             /* cyan — the "toque" */
+
+  /* ── Spacing (8px base, editorial multipliers) ─────────────────── */
+  --space-0: 0;
+  --space-1: 0.125rem;    /*   2px */
+  --space-2: 0.25rem;     /*   4px */
+  --space-3: 0.375rem;    /*   6px */
+  --space-4: 0.5rem;      /*   8px */
+  --space-5: 0.75rem;     /*  12px */
+  --space-6: 1rem;        /*  16px */
+  --space-7: 1.5rem;      /*  24px */
+  --space-8: 2rem;        /*  32px */
+  --space-9: 3rem;        /*  48px */
+  --space-10: 4rem;       /*  64px */
+  --space-11: 6rem;       /*  96px */
+  --space-12: 8rem;       /* 128px */
+  --space-section: clamp(6rem, 4rem + 8vw, 12rem);    /* vertical rhythm between sections */
+  --space-gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);  /* page side gutter, ≥16px */
+
+  /* ── Typography: families (next/font variables with fallbacks) ─── */
+  --font-family-display: var(--font-instrument-serif), "Times New Roman", serif;
+  --font-family-body: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-family-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ── Typography: fluid scale (375px → 1440px) ──────────────────── */
+  --font-size-xs: 0.75rem;                                  /* 12  — eyebrows, captions */
+  --font-size-sm: 0.875rem;                                 /* 14  — UI, tags */
+  --font-size-base: 1rem;                                   /* 16  — body (mobile floor) */
+  --font-size-md: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);     /* 17→19 lead body */
+  --font-size-lg: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);         /* 20→24 card titles */
+  --font-size-xl: clamp(1.5rem, 1.25rem + 1.1vw, 2.25rem);        /* 24→36 sub-headlines */
+  --font-size-2xl: clamp(2.25rem, 1.6rem + 2.8vw, 4rem);          /* 36→64 metrics */
+  --font-size-3xl: clamp(3rem, 1.9rem + 4.7vw, 6.5rem);           /* 48→104 section headlines */
+  --font-size-4xl: clamp(3.5rem, 1.2rem + 10vw, 11rem);           /* 56→176 hero name */
+  --font-size-closing: clamp(3rem, 1rem + 8vw, 10rem);            /* 48→160 Contact / 404 headline */
+  --font-size-stat: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);       /* 28→40 compact metrics */
+  --font-size-micro: 0.6875rem;                                   /* 11 — tags, hints */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-none: 0.9;       /* hero name */
+  --line-height-tight: 1.05;     /* display headlines */
+  --line-height-snug: 1.25;      /* sub-headlines, card titles */
+  --line-height-normal: 1.55;    /* body */
+  --line-height-relaxed: 1.7;    /* long-form about text */
+
+  --letter-spacing-tighter: -0.045em;  /* hero sans */
+  --letter-spacing-tight: -0.025em;    /* display */
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.14em;       /* uppercase mono eyebrows */
+
+  /* ── Layout ─────────────────────────────────────────────────────── */
+  --max-width-content: 38rem;      /* ~68ch reading width */
+  --max-width-wide: 72rem;         /* sections */
+  --max-width-page: 90rem;         /* hero, work grid */
+
+  --border-radius-sm: 0.625rem;    /* 10 — tags, small buttons */
+  --border-radius-md: 1.25rem;     /* 20 — cards inner media */
+  --border-radius-lg: 2rem;        /* 32 — glass panels (continuous-corner feel) */
+  --border-radius-xl: 2.75rem;     /* 44 — overlay panel, mobile sheet */
+  --border-radius-full: 999px;     /* pills, lens */
+
+  --shadow-sm: 0 1px 2px rgb(11 13 18 / 0.06), 0 2px 8px rgb(11 13 18 / 0.04);
+  --shadow-md: 0 4px 12px rgb(11 13 18 / 0.06), 0 16px 40px rgb(11 13 18 / 0.08);
+  --shadow-lg: 0 12px 32px rgb(11 13 18 / 0.08), 0 40px 100px rgb(11 13 18 / 0.14);
+  --shadow-glass-surface:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-shade),
+    inset 0 0 0 1px var(--glass-border),
+    var(--shadow-md);
+  --shadow-focus: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-border-focus);
+
+  /* ── Motion ─────────────────────────────────────────────────────── */
+  --duration-instant: 50ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 450ms;
+  --duration-slower: 700ms;
+  --duration-reveal: 1100ms;       /* split-text headline reveals */
+  --duration-preloader: 1800ms;    /* hard cap < 2s */
+
+  --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --easing-out: cubic-bezier(0.16, 1, 0.3, 1);        /* expo-out: reveals, overlays */
+  --easing-in-out: cubic-bezier(0.83, 0, 0.17, 1);    /* page-level transitions */
+  --easing-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* glass press only — never on text */
+
+  --stagger-line: 90ms;            /* between lines in a reveal */
+  --stagger-item: 70ms;            /* between cards / list rows */
+
+  /* ── Breakpoints (reference; Tailwind v4 defaults are used as-is) ─ */
+  --breakpoint-sm: 40rem;    /*  640 */
+  --breakpoint-md: 48rem;    /*  768 — tablet */
+  --breakpoint-lg: 64rem;    /* 1024 — desktop: glass cursor, parallax */
+  --breakpoint-xl: 80rem;    /* 1280 */
+  --breakpoint-2xl: 96rem;   /* 1536 */
+
+  /* ── Layers ─────────────────────────────────────────────────────── */
+  --z-fluid: 0;
+  --z-content: 10;
+  --z-nav: 50;
+  --z-overlay: 70;
+  --z-cursor: 90;
+  --z-preloader: 100;
+}
+
+/* ── Reduced motion: collapse durations, keep content ──────────── */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-slow: 1ms;
+    --duration-slower: 1ms;
+    --duration-reveal: 1ms;
+    --duration-preloader: 0ms;
+    --stagger-line: 0ms;
+    --stagger-item: 0ms;
+  }
+}
+
+/* ── Tailwind v4 bridge ────────────────────────────────────────────
+ * Short utility names over the semantic tokens:
+ *   bg-canvas, bg-surface, bg-well, text-ink, text-ink-muted,
+ *   text-ink-subtle, border-line, border-line-subtle, bg-accent,
+ *   text-accent, text-accent-fg, font-display, font-sans, font-mono, text-hero, …
+ */
+@theme inline {
+  --color-canvas: var(--color-bg-primary);
+  --color-surface: var(--color-bg-secondary);
+  --color-well: var(--color-bg-tertiary);
+  --color-inverse: var(--color-bg-inverse);
+
+  --color-ink: var(--color-text-primary);
+  --color-ink-muted: var(--color-text-secondary);
+  --color-ink-subtle: var(--color-text-tertiary);
+  --color-ink-inverse: var(--color-text-inverse);
+
+  --color-line: var(--color-border-primary);
+  --color-line-subtle: var(--color-border-secondary);
+
+  --color-accent: var(--color-accent-primary);
+  --color-accent-hover: var(--color-accent-primary-hover);
+  --color-accent-active: var(--color-accent-primary-active);
+  --color-accent-2: var(--color-accent-secondary);
+  --color-accent-fg: var(--color-on-accent);
+
+  --color-success: var(--color-status-success);
+  --color-warning: var(--color-status-warning);
+  --color-error: var(--color-status-error);
+
+  --font-display: var(--font-family-display);
+  --font-sans: var(--font-family-body);
+  --font-mono: var(--font-family-mono);
+
+  --text-hero: var(--font-size-4xl);
+  --text-hero--line-height: var(--line-height-none);
+  --text-hero--letter-spacing: var(--letter-spacing-tighter);
+  --text-closing: var(--font-size-closing);
+  --text-closing--line-height: 0.95;
+  --text-closing--letter-spacing: var(--letter-spacing-tighter);
+  --text-stat: var(--font-size-stat);
+  --text-stat--line-height: 1;
+  --text-micro: var(--font-size-micro);
+  --text-display: var(--font-size-3xl);
+  --text-display--line-height: var(--line-height-tight);
+  --text-display--letter-spacing: var(--letter-spacing-tight);
+  --text-metric: var(--font-size-2xl);
+  --text-metric--line-height: 1;
+  --text-headline: var(--font-size-xl);
+  --text-headline--line-height: var(--line-height-snug);
+  --text-title: var(--font-size-lg);
+  --text-title--line-height: var(--line-height-snug);
+  --text-lead: var(--font-size-md);
+  --text-lead--line-height: var(--line-height-relaxed);
+
+  --radius-glass-sm: var(--border-radius-sm);
+  --radius-glass-md: var(--border-radius-md);
+  --radius-glass: var(--border-radius-lg);
+  --radius-glass-xl: var(--border-radius-xl);
+
+  --shadow-glass: var(--shadow-glass-surface);
+  --shadow-soft: var(--shadow-md);
+  --shadow-deep: var(--shadow-lg);
+
+  --ease-out-expo: var(--easing-out);
+  --ease-in-out-expo: var(--easing-in-out);
+  --ease-spring: var(--easing-bounce);
+
+  --container-content: var(--max-width-content);
+  --container-wide: var(--max-width-wide);
+  --container-page: var(--max-width-page);
+}

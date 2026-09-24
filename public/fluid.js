@@ -22,34 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+(function () {
 'use strict';
 
-// Ensure GA is a no-op if not present
-if (typeof window !== 'undefined' && typeof window.ga !== 'function') {
-    window.ga = function () {};
-}
-const ga = typeof window !== 'undefined' ? window.ga : function () {};
+// The script can be injected more than once (client navigations remount the
+// React wrapper). The simulation owns its canvas, so it survives remounts.
+if (window.__fluid) return;
 
-// Mobile promo section (guarded for missing elements)
-const promoPopup = document.getElementsByClassName('promo')[0];
-const promoPopupClose = document.getElementsByClassName('promo-close')[0];
-
-if (promoPopup && promoPopupClose) {
-    if (isMobile()) {
-        setTimeout(() => {
-            promoPopup.style.display = 'table';
-        }, 20000);
-    }
-
-    promoPopupClose.addEventListener('click', () => {
-        promoPopup.style.display = 'none';
-    });
-}
+const ga = function () {};
 
 // Simulation section
 
-const canvas = document.getElementById('fluid-canvas') || document.getElementsByTagName('canvas')[0];
+const canvas = createCanvas();
 resizeCanvas();
+
+function createCanvas () {
+    let el = document.getElementById('fluid-canvas');
+    if (!el) {
+        el = document.createElement('canvas');
+        el.id = 'fluid-canvas';
+        document.body.prepend(el);
+    }
+    el.setAttribute('aria-hidden', 'true');
+    el.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;pointer-events:auto;';
+    return el;
+}
 
 let config = {
     SIM_RESOLUTION: 128,
@@ -79,23 +76,58 @@ let config = {
     SUNRAYS_WEIGHT: 1.0,
 }
 
-function applyThemeBackground () {
-    const theme = document.documentElement.getAttribute('data-theme');
-    if (theme === 'dark') {
-        config.BACK_COLOR = { r: 2, g: 6, b: 23 };
-    } else {
-        config.BACK_COLOR = { r: 255, g: 255, b: 255 };
-    }
+// Palette, intensity and background come from src/styles/tokens.css
+// (--fluid-*), so the theme lives in CSS and the fluid just follows it.
+let palette = [];
+let intensity = 0.15;
+let burstGain = 10.0;
+let backTarget = { r: 255, g: 255, b: 255 };
+const BACK_FADE_SPEED = 6.0;
+
+const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+function hexToRGB (hex) {
+    let h = hex.trim().replace('#', '');
+    if (h.length === 3) h = h.split('').map(c => c + c).join('');
+    const n = parseInt(h, 16);
+    return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255 };
 }
 
-applyThemeBackground();
+function readThemeTokens (immediate) {
+    const styles = getComputedStyle(document.documentElement);
+    const read = name => styles.getPropertyValue(name).trim();
 
-if (typeof MutationObserver !== 'undefined') {
-    const observer = new MutationObserver(() => {
-        applyThemeBackground();
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    const colors = [1, 2, 3, 4, 5].map(i => read('--fluid-color-' + i)).filter(Boolean);
+    if (colors.length) palette = colors.map(hexToRGB);
+
+    const parsedIntensity = parseFloat(read('--fluid-intensity'));
+    if (!isNaN(parsedIntensity)) intensity = parsedIntensity;
+
+    const parsedBurst = parseFloat(read('--fluid-burst'));
+    if (!isNaN(parsedBurst)) burstGain = parsedBurst;
+
+    const back = read('--fluid-back').split(/[\s,]+/).map(Number);
+    if (back.length === 3 && back.every(v => !isNaN(v)))
+        backTarget = { r: back[0], g: back[1], b: back[2] };
+
+    if (immediate) config.BACK_COLOR = { ...backTarget };
 }
+
+// Wall-clock based: the sim's dt is capped per frame, which would stretch the
+// fade on slow devices.
+let lastFadeTime = performance.now();
+function fadeBackColor () {
+    const now = performance.now();
+    const elapsed = Math.min((now - lastFadeTime) / 1000, 0.25);
+    lastFadeTime = now;
+    const c = config.BACK_COLOR;
+    const t = Math.min(1, elapsed * BACK_FADE_SPEED);
+    c.r += (backTarget.r - c.r) * t;
+    c.g += (backTarget.g - c.g) * t;
+    c.b += (backTarget.b - c.b) * t;
+}
+
+readThemeTokens(true);
 
 function pointerPrototype () {
     this.id = -1;
@@ -1132,19 +1164,30 @@ initFramebuffers();
 
 let lastUpdateTime = Date.now();
 let colorUpdateTimer = 0.0;
-update();
+let frame = requestAnimationFrame(update);
 
 function update () {
     const dt = calcDeltaTime();
     if (resizeCanvas())
         initFramebuffers();
+    fadeBackColor();
     updateColors(dt);
     applyInputs();
     if (!config.PAUSED)
         step(dt);
     render(null);
-    requestAnimationFrame(update);
+    frame = requestAnimationFrame(update);
 }
+
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+    } else if (!frame) {
+        lastUpdateTime = Date.now();
+        frame = requestAnimationFrame(update);
+    }
+});
 
 function calcDeltaTime () {
     let now = Date.now();
@@ -1388,9 +1431,9 @@ function splatPointer (pointer) {
 function multipleSplats (amount) {
     for (let i = 0; i < amount; i++) {
         const color = generateColor();
-        color.r *= 10.0;
-        color.g *= 10.0;
-        color.b *= 10.0;
+        color.r *= burstGain;
+        color.g *= burstGain;
+        color.b *= burstGain;
         const x = Math.random();
         const y = Math.random();
         const dx = 1000 * (Math.random() - 0.5);
@@ -1488,32 +1531,30 @@ document.addEventListener('mouseleave', () => {
     if (pointer.down) {
         updatePointerUpData(pointer);
     }
-    isMouseMoving = false;
 });
 
-canvas.addEventListener('touchstart', e => {
-    e.preventDefault();
-    const touches = e.targetTouches;
+// Touches are read on window (passive) so content on top of the canvas still
+// stirs the fluid and the page keeps scrolling. The canvas is fixed, so
+// client coordinates map straight onto it.
+window.addEventListener('touchstart', e => {
+    const touches = e.touches;
     while (touches.length >= pointers.length)
         pointers.push(new pointerPrototype());
     for (let i = 0; i < touches.length; i++) {
-        let posX = scaleByPixelRatio(touches[i].pageX);
-        let posY = scaleByPixelRatio(touches[i].pageY);
-        updatePointerDownData(pointers[i + 1], touches[i].identifier, posX, posY);
+        const coords = getCanvasCoordinates(touches[i].clientX, touches[i].clientY);
+        updatePointerDownData(pointers[i + 1], touches[i].identifier, coords.x, coords.y);
     }
-});
+}, { passive: true });
 
-canvas.addEventListener('touchmove', e => {
-    e.preventDefault();
-    const touches = e.targetTouches;
+window.addEventListener('touchmove', e => {
+    const touches = e.touches;
     for (let i = 0; i < touches.length; i++) {
         let pointer = pointers[i + 1];
-        if (!pointer.down) continue;
-        let posX = scaleByPixelRatio(touches[i].pageX);
-        let posY = scaleByPixelRatio(touches[i].pageY);
-        updatePointerMoveData(pointer, posX, posY);
+        if (!pointer || !pointer.down) continue;
+        const coords = getCanvasCoordinates(touches[i].clientX, touches[i].clientY);
+        updatePointerMoveData(pointer, coords.x, coords.y);
     }
-}, false);
+}, { passive: true });
 
 window.addEventListener('touchend', e => {
     const touches = e.changedTouches;
@@ -1525,12 +1566,17 @@ window.addEventListener('touchend', e => {
     }
 });
 
-window.addEventListener('keydown', e => {
-    if (e.code === 'KeyP')
-        config.PAUSED = !config.PAUSED;
-    if (e.key === ' ')
-        splatStack.push(parseInt(Math.random() * 20) + 5);
-});
+// Automatic splats (e.g. the preloader reveal) respect reduced motion;
+// pointer interaction always works.
+window.__fluid = {
+    burst (amount) {
+        if (reducedMotionQuery.matches) return;
+        splatStack.push(amount || parseInt(Math.random() * 20) + 5);
+    },
+    refreshTheme () {
+        readThemeTokens(false);
+    },
+};
 
 function updatePointerDownData (pointer, id, posX, posY) {
     pointer.id = id;
@@ -1572,11 +1618,10 @@ function correctDeltaY (delta) {
 }
 
 function generateColor () {
-    let c = HSVtoRGB(Math.random(), 1.0, 1.0);
-    c.r *= 0.15;
-    c.g *= 0.15;
-    c.b *= 0.15;
-    return c;
+    const base = palette.length
+        ? palette[Math.floor(Math.random() * palette.length)]
+        : HSVtoRGB(Math.random(), 1.0, 1.0);
+    return { r: base.r * intensity, g: base.g * intensity, b: base.b * intensity };
 }
 
 function HSVtoRGB (h, s, v) {
@@ -1653,3 +1698,5 @@ function hashCode (s) {
     }
     return hash;
 };
+
+})();
