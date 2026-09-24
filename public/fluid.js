@@ -1049,7 +1049,11 @@ function createFBO (w, h, internalFormat, format, type, param) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     gl.viewport(0, 0, w, h);
+    // Alpha 0: a clear of (0,0,0,1) makes the sunrays pass treat the whole
+    // frame as illuminated and the first frames flash bright blobs.
+    gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clearColor(0, 0, 0, 1);
 
     let texelSizeX = 1.0 / w;
     let texelSizeY = 1.0 / h;
@@ -1468,6 +1472,7 @@ function correctRadius (radius) {
 // Variável para rastrear posição anterior do mouse
 let lastMouseX = 0;
 let lastMouseY = 0;
+let hasPointer = false;
 // let isMouseMoving = false;
 
 // Função para converter coordenadas da tela para coordenadas do canvas
@@ -1493,6 +1498,15 @@ document.addEventListener('mousemove', e => {
                           e.clientY >= rect.top && e.clientY <= rect.bottom;
     
     if (isInsideCanvas) {
+        // First sample only records where the pointer already is. A delta
+        // from (0, 0) would throw a splat across the whole canvas on load.
+        if (!hasPointer) {
+            lastMouseX = posX;
+            lastMouseY = posY;
+            hasPointer = true;
+            return;
+        }
+
         // Calcular movimento do mouse
         let deltaX = posX - lastMouseX;
         let deltaY = posY - lastMouseY;

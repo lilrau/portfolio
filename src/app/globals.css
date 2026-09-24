@@ -78,3 +78,53 @@ footer {
 html:not([data-intro="pending"]) .preloader {
   display: none;
 }
+
+/* Nothing under the sheet — hero type, nav, fluid — until the intro is done.
+   Otherwise the page paints in its resting layout, then the reveal starts. */
+html[data-intro="pending"] body > :not(.preloader) {
+  visibility: hidden;
+}
+
+/* The sim stays invisible through the name reveal. `data-fluid` turns on
+   as the sheet starts to dissolve; a skipped intro never waits. */
+#fluid-canvas {
+  visibility: hidden;
+}
+html[data-fluid="on"] #fluid-canvas,
+html[data-intro="skip"] #fluid-canvas {
+  visibility: visible;
+}
+
+/* Name + progress run in CSS so the first paint is already the intro,
+   not a resting layout waiting on hydration. */
+@keyframes preloader-rise {
+  from { transform: translateY(140%); }
+  to { transform: translateY(0%); }
+}
+@keyframes preloader-bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+/* Parked under the clip until .is-playing, so a hydration frame can't
+   show the name in its resting position. */
+.preloader-line {
+  transform: translateY(140%);
+}
+.preloader.is-playing .preloader-line {
+  animation: preloader-rise 0.9s var(--easing-out) both;
+}
+.preloader-line-delay {
+  animation-delay: 0.12s;
+}
+.preloader-bar {
+  transform: scaleX(0);
+}
+.preloader.is-playing .preloader-bar {
+  animation: preloader-bar 1.05s var(--easing-in-out) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .preloader-line,
+  .preloader-bar {
+    animation: none;
+  }
+}
