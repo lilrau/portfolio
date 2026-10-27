@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Section } from "../ui";
@@ -8,6 +9,8 @@ import GlassSurface from "../GlassSurface";
 import { stack } from "../../data/profile";
 import { tr } from "../../data/types";
 import type { Dictionary, Locale } from "../../i18n";
+
+const AboutJellies = dynamic(() => import("../about-jellies/AboutJellies"), { ssr: false });
 
 export default function About({ copy, locale }: { copy: Dictionary["about"]; locale: Locale }) {
   const photoRef = useRef<HTMLDivElement>(null);
@@ -22,10 +25,11 @@ export default function About({ copy, locale }: { copy: Dictionary["about"]; loc
       eyebrow={copy.eyebrow}
       title={{ before: copy.titleBefore, accent: copy.titleAccent, after: copy.titleAfter }}
     >
-      <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
+      <div className="relative isolate grid gap-12 lg:grid-cols-12 lg:gap-10">
+        <AboutJellies />
         <div ref={photoRef} className="lg:col-span-4 lg:col-start-1">
           <GlassSurface variant="panel" className="p-2.5 md:p-3">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[calc(var(--border-radius-lg)-0.625rem)] bg-well">
+            <div data-about-portrait className="relative aspect-[4/5] overflow-hidden rounded-[calc(var(--border-radius-lg)-0.625rem)] bg-well">
               <motion.div className="absolute -inset-y-[6%] inset-x-0" style={{ y }}>
                 <Image
                   src="/dev_pic_blur_bg.png"
@@ -40,22 +44,22 @@ export default function About({ copy, locale }: { copy: Dictionary["about"]; loc
         </div>
 
         <div className="lg:col-span-7 lg:col-start-6">
-          <div className="max-w-content space-y-6 text-lead text-ink">
+          <div data-jelly-content className="max-w-content space-y-6 text-lead text-ink">
             {copy.paragraphs.map((p) => (
               <p key={p}>{p}</p>
             ))}
             <p className="border-l border-line pl-5 text-ink-muted">{copy.educator}</p>
           </div>
 
-          <div className="mt-16">
-            <h3 className="mb-6 eyebrow text-ink">{copy.stack}</h3>
+          <div data-about-stack className="mt-16">
+            <h3 data-jelly-content className="mb-6 eyebrow text-ink">{copy.stack}</h3>
             <div className="grid gap-8 border-t border-line pt-8 sm:grid-cols-3">
               {stack.map((group) => (
                 <div key={group.group.en}>
-                  <h4 className="mb-4 font-display text-headline leading-none italic text-ink">{tr(group.group, locale)}</h4>
+                  <h4 data-jelly-content className="mb-4 w-fit max-w-full font-display text-headline leading-none italic text-ink">{tr(group.group, locale)}</h4>
                   <ul className="space-y-1.5 text-ink-muted">
                     {group.items.map((item) => (
-                      <li key={item}>{item}</li>
+                      <li data-jelly-content key={item} className="w-fit max-w-full">{item}</li>
                     ))}
                   </ul>
                 </div>
@@ -63,7 +67,7 @@ export default function About({ copy, locale }: { copy: Dictionary["about"]; loc
             </div>
           </div>
 
-          <div className="mt-12 border-t border-line pt-6">
+          <div data-jelly-content className="mt-12 border-t border-line pt-6">
             <h3 className="mb-4 eyebrow text-ink">{copy.languages}</h3>
             <ul className="grid gap-3 sm:grid-cols-2">
               {copy.languageList.map((lang) => (
