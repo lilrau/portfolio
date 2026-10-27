@@ -14,6 +14,27 @@ html {
   overflow-x: clip;
 }
 
+.contact-layout {
+  min-height: 48rem;
+}
+@media (min-width: 48rem) {
+  .contact-layout {
+    min-height: max(34rem, calc(100svh - var(--space-section) - 4rem));
+  }
+}
+
+/* Anchor the visible content, accounting for each section's leading space.
+   Desktop clears the fixed nav; mobile navigation sits at the bottom. */
+main > section[id]:not(#top) {
+  scroll-margin-top: calc(1.5rem - var(--space-section));
+}
+
+@media (min-width: 48rem) {
+  main > section[id]:not(#top) {
+    scroll-margin-top: calc(6rem - var(--space-section));
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
@@ -74,8 +95,10 @@ footer {
   60%, 100% { transform: translateY(200%); }
 }
 
-/* Preloader only exists while the intro is pending (set by the inline head script) */
-html:not([data-intro="pending"]) .preloader {
+/* A completed intro keeps its sheet mounted for AnimatePresence's exit fade.
+   Only a skipped intro (or disabled JS) hides it before the first paint. */
+html:not([data-intro]) .preloader,
+html[data-intro="skip"] .preloader {
   display: none;
 }
 
@@ -95,36 +118,35 @@ html[data-intro="skip"] #fluid-canvas {
   visibility: visible;
 }
 
-/* Name + progress run in CSS so the first paint is already the intro,
-   not a resting layout waiting on hydration. */
-@keyframes preloader-rise {
-  from { transform: translateY(140%); }
-  to { transform: translateY(0%); }
+/* A small editorial signature precedes the hero's larger type reveal. */
+@keyframes preloader-appear {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes preloader-depart {
+  to { opacity: 0; transform: translateY(-8px); }
 }
 @keyframes preloader-bar {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
 }
-/* Parked under the clip until .is-playing, so a hydration frame can't
-   show the name in its resting position. */
-.preloader-line {
-  transform: translateY(140%);
+.preloader-name {
+  animation: preloader-appear 0.7s var(--easing-out) both;
 }
-.preloader.is-playing .preloader-line {
-  animation: preloader-rise 0.9s var(--easing-out) both;
+.preloader-role {
+  animation: preloader-appear 0.7s 0.12s var(--easing-out) both;
 }
-.preloader-line-delay {
-  animation-delay: 0.12s;
+html[data-intro="done"] .preloader-signature {
+  animation: preloader-depart 0.35s var(--easing-default) both;
 }
 .preloader-bar {
-  transform: scaleX(0);
-}
-.preloader.is-playing .preloader-bar {
-  animation: preloader-bar 1.05s var(--easing-in-out) both;
+  animation: preloader-bar 0.85s var(--easing-in-out) both;
 }
 @media (prefers-reduced-motion: reduce) {
-  .preloader-line,
+  .preloader-name,
+  .preloader-role,
+  .preloader-signature,
   .preloader-bar {
-    animation: none;
+    animation: none !important;
   }
 }

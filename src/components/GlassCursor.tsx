@@ -83,7 +83,7 @@ export default function GlassCursor() {
         transition={{ type: "spring", stiffness: 420, damping: 28 }}
       >
         <path
-          d="M2.5 2.2 L22.6 11.4 C23.5 11.8 23.4 13.1 22.4 13.3 L14.2 15.2 C13.8 15.3 13.5 15.6 13.4 16 L10.8 24.7 C10.5 25.7 9.1 25.7 8.8 24.7 Z"
+          d="M6.1 3.4 L20.8 10.1 C24.1 11.6 23.7 14.1 20.2 14.9 L16.8 15.7 Q14.6 16.2 13.9 18.4 L12.3 23.1 C11.2 26.4 8.5 26.4 7.5 23 L2.8 7 C1.5 2.5 2.8 1.9 6.1 3.4 Z"
           fill="var(--color-ink)"
           stroke="var(--color-bg-primary)"
           strokeWidth="1.6"

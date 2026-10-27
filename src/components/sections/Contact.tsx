@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { ArrowUpRight, Check, Copy } from "lucide-react";
 import RevealHeadline from "../RevealHeadline";
 import GlassSurface from "../GlassSurface";
 import { Eyebrow } from "../ui";
 import { contact } from "../../data/profile";
 import type { Dictionary } from "../../i18n";
+
+const ContactPond = dynamic(() => import("../contact-pond/ContactPond"), { ssr: false });
 
 export default function Contact({ copy }: { copy: Dictionary["contact"] }) {
   const [copied, setCopied] = useState(false);
@@ -29,25 +32,30 @@ export default function Contact({ copy }: { copy: Dictionary["contact"] }) {
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="relative z-10 scroll-mt-24 px-[var(--space-gutter)] pt-[var(--space-section)] pb-16"
+      className="relative isolate z-10 scroll-mt-24 overflow-hidden px-[var(--space-gutter)] pt-[var(--space-section)] pb-16"
     >
-      <div className="mx-auto max-w-page">
-        <Eyebrow className="mb-10">
-          <span className="text-ink-muted">04</span>
-          <span aria-hidden className="h-px w-8 bg-line" />
-          {copy.eyebrow}
-        </Eyebrow>
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_88%,transparent)]">
+        <ContactPond />
+      </div>
+      <div className="contact-layout relative mx-auto flex max-w-page flex-col">
+        <div data-pond-content className="max-w-[36rem] lg:max-w-[58%]">
+          <Eyebrow className="mb-8">
+            <span className="text-ink-muted">04</span>
+            <span aria-hidden className="h-px w-8 bg-line" />
+            {copy.eyebrow}
+          </Eyebrow>
 
-        <RevealHeadline
-          id="contact-title"
-          before={copy.titleBefore}
-          accent={copy.titleAccent}
-          after={copy.titleAfter}
-          className="max-w-[14ch] text-closing font-medium text-ink"
-        />
+          <RevealHeadline
+            id="contact-title"
+            before={copy.titleBefore}
+            accent={copy.titleAccent}
+            after={copy.titleAfter}
+            className="max-w-[21ch] text-[clamp(2.25rem,1.5rem_+_3vw,4.5rem)] leading-[1.08] font-medium tracking-[-0.04em] text-ink"
+          />
+        </div>
 
-        <div className="mt-14 grid gap-10 border-t border-line pt-10 lg:mt-20 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-7">
+        <div className="mt-auto grid gap-10 pt-16 lg:grid-cols-12 lg:items-end">
+          <div data-pond-content className="lg:col-span-7">
             <p className="mb-6 max-w-content text-lead text-ink-muted">{copy.intro}</p>
             <div className="flex flex-wrap items-center gap-3">
               <a
@@ -74,18 +82,18 @@ export default function Contact({ copy }: { copy: Dictionary["contact"] }) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-6 lg:col-span-5 lg:items-end">
+          <div data-pond-content className="flex flex-col gap-6 lg:col-span-5 lg:items-end">
             <ul className="flex flex-wrap gap-3">
               {[
-                { label: "LinkedIn", href: contact.linkedin, Icon: LinkedInIcon },
-                { label: "GitHub", href: contact.github, Icon: GitHubIcon },
+                { label: "LinkedIn", href: contact.linkedin, Icon: LinkedInIcon, color: "bg-accent hover:bg-accent-hover" },
+                { label: "GitHub", href: contact.github, Icon: GitHubIcon, color: "bg-ink hover:bg-[#252830]" },
               ].map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex h-12 items-center gap-2.5 rounded-full border border-line pr-5 pl-5 font-medium text-ink transition-colors hover:bg-ink hover:text-ink-inverse focus-visible:shadow-[var(--shadow-focus)] focus-visible:outline-none"
+                    className={`group inline-flex h-12 items-center gap-2.5 rounded-full pr-5 pl-5 font-medium text-white [text-shadow:none] transition-colors focus-visible:shadow-[var(--shadow-focus)] focus-visible:outline-none ${link.color}`}
                   >
                     <link.Icon />
                     {link.label}

@@ -52,8 +52,11 @@ function useActiveSection() {
   const [active, setActive] = useState<SectionId | null>(null);
   useEffect(() => {
     let frame = 0;
+    let destination: SectionId | null = null;
+    let releaseTimer: ReturnType<typeof setTimeout> | undefined;
     const update = () => {
       frame = 0;
+      if (destination) return;
       const line = window.innerHeight * 0.45;
       const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
       let current: SectionId | null = null;
@@ -66,11 +69,40 @@ function useActiveSection() {
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
+    const release = () => {
+      destination = null;
+      clearTimeout(releaseTimer);
+      schedule();
+    };
+    // A click selects its destination immediately. Passing intermediate
+    // sections during the scroll must not pull the selection away from it.
+    const select = (event: globalThis.MouseEvent) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = (event.target as Element).closest<HTMLAnchorElement>('nav a[href^="#"]');
+      const id = link?.hash.slice(1) as SectionId | undefined;
+      if (!id || !SECTIONS.includes(id)) return;
+      destination = id;
+      setActive(id);
+      clearTimeout(releaseTimer);
+      releaseTimer = setTimeout(release, 1500);
+    };
+    const interrupt = (event: KeyboardEvent) => {
+      if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(event.key)) release();
+    };
     update();
+    document.addEventListener("click", select);
+    window.addEventListener("wheel", release, { passive: true });
+    window.addEventListener("touchstart", release, { passive: true });
+    window.addEventListener("keydown", interrupt);
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     return () => {
       cancelAnimationFrame(frame);
+      clearTimeout(releaseTimer);
+      document.removeEventListener("click", select);
+      window.removeEventListener("wheel", release);
+      window.removeEventListener("touchstart", release);
+      window.removeEventListener("keydown", interrupt);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
@@ -184,7 +216,42 @@ function DesktopNav({
   const rowRef = useRef<HTMLDivElement>(null);
   const switchRef = useRef<HTMLDivElement>(null);
   const resumeRef = useRef<HTMLDivElement>(null);
+  const linksRef = useRef<HTMLUListElement>(null);
+  const indicatorX = useMotionValue(0);
+  const indicatorRight = useMotionValue(0);
+  const indicatorWidth = useTransform([indicatorX, indicatorRight], ([left, right]: number[]) => Math.max(0, right - left));
+  const labelX = useTransform(indicatorX, (x) => -x);
+  const indicatorScaleY = useMotionValue(1);
+  const indicatorReady = useRef(false);
   const [m, setM] = useState<{ bar: number; gutter: number; row: number; sx: number; sw: number; rw: number } | null>(null);
+
+  // Animate the capsule's edges independently: the leading edge reaches first
+  // and the trailing edge catches up, giving the glass a brief elastic stretch.
+  useEffect(() => {
+    const list = linksRef.current;
+    if (!list || !active) return;
+    const item = list.children[SECTIONS.indexOf(active)] as HTMLElement;
+    const x = item.offsetLeft;
+    const right = x + item.offsetWidth;
+    if (!indicatorReady.current || reduce) {
+      indicatorReady.current = true;
+      indicatorX.jump(x);
+      indicatorRight.jump(right);
+      indicatorScaleY.jump(1);
+      return;
+    }
+    const forward = x > indicatorX.get();
+    const leading = { type: "spring", stiffness: 380, damping: 32, mass: 0.7 } as const;
+    const trailing = { type: "spring", stiffness: 280, damping: 29, mass: 0.8, delay: 0.035 } as const;
+    const controls = [
+      animate(indicatorX, x, forward ? trailing : leading),
+      animate(indicatorRight, right, forward ? leading : trailing),
+      animate(indicatorScaleY, [1, 0.94, 1], { duration: 0.48, times: [0, 0.3, 1], ease: EASE_OUT_EXPO }),
+    ];
+    return () => {
+      controls.forEach((control) => control.stop());
+    };
+  }, [active, locale, m, reduce, indicatorX, indicatorRight, indicatorScaleY]);
 
   useEffect(() => {
     const bar = barRef.current;
@@ -346,27 +413,32 @@ function DesktopNav({
         <motion.div className="pointer-events-auto absolute top-0 h-[52px] overflow-hidden rounded-full" style={{ left: start, width }}>
           <motion.div ref={rowRef} className="flex w-max items-center gap-1" style={{ padding: PAD, x: shift }}>
             <motion.div className="flex items-center gap-1" inert={!past} {...fade(0.05)}>
-              <ul className="flex items-center">
+              <ul ref={linksRef} className="relative isolate flex items-center">
                 {SECTIONS.map((id) => (
-                  <li key={id} className="relative">
-                    {active === id && (
-                      <motion.span
-                        layoutId="nav-active"
-                        className="absolute inset-0 rounded-full bg-ink"
-                        transition={{ type: "spring", stiffness: 420, damping: 36 }}
-                      />
-                    )}
+                  <li key={id}>
                     <a
                       href={`#${id}`}
                       aria-current={active === id ? "location" : undefined}
-                      className={`relative inline-flex h-10 items-center rounded-full px-4 text-sm font-medium transition-colors duration-[var(--duration-normal)] focus-visible:shadow-[var(--shadow-focus)] focus-visible:outline-none ${
-                        active === id ? "text-ink-inverse" : "text-ink-muted hover:text-ink"
-                      }`}
+                      className={`relative inline-flex h-10 items-center rounded-full px-4 text-sm font-medium transition-colors duration-[var(--duration-normal)] hover:text-ink focus-visible:shadow-[var(--shadow-focus)] focus-visible:outline-none ${active === id ? "text-ink" : "text-ink-muted"}`}
                     >
                       {labels[id]}
                     </a>
                   </li>
                 ))}
+                <motion.li
+                  aria-hidden
+                  data-nav-indicator
+                  className="pointer-events-none absolute top-0 left-0 h-10 overflow-hidden rounded-full bg-ink"
+                  style={{ x: indicatorX, width: indicatorWidth, scaleY: indicatorScaleY, opacity: active ? 1 : 0 }}
+                >
+                  <motion.span className="flex w-max" style={{ x: labelX }}>
+                    {SECTIONS.map((id) => (
+                      <span key={id} className="inline-flex h-10 items-center whitespace-nowrap px-4 text-sm font-medium text-ink-inverse">
+                        {labels[id]}
+                      </span>
+                    ))}
+                  </motion.span>
+                </motion.li>
               </ul>
               <span aria-hidden className="mx-1.5 h-6 w-px bg-line" />
             </motion.div>

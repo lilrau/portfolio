@@ -28,7 +28,10 @@ export default function SmoothScroll() {
       if (!target) return;
       event.preventDefault();
       // Lenis honours the sections' scroll-margin-top, which clears the nav.
-      lenis.scrollTo(id === "top" ? 0 : target);
+      lenis.scrollTo(id === "top" ? 0 : target, {
+        duration: 1.25,
+        easing: (t: number) => (1 - Math.cos(Math.PI * t)) / 2,
+      });
       history.pushState(null, "", `#${id}`);
     };
 
